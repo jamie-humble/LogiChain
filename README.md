@@ -5,4 +5,9 @@ In essence, a supply chain is the description of a network’s movement of suppl
 The traditional model of a supply chain is inefficient. this is due to the time it takes to transfer information from node to node, but with the new technology that the last few decades have produced, there are many optimazations to be made in these systems.
 One of the more promising technoligies able to streamline supply chain preformance is blockchain, blockchain is useful for scalable, uniform and instantaneous* data sharing. Not only this, but blockchain is based around de-centralized, transparent and ultimately trustworthy systems, this is perfect for money driven networks like supply chains; everyone is on the same page and everyone profits.
 
+## Google Drive
+100% of the project documentation and up to date files are stored on this [Google Drive](https://drive.google.com/drive/folders/1bf7ycVrrnMAaCSb8lEibmbPmOpP5BiiD?usp=sharing)
+
 ## Access the hosted webpage here: [LogiChain](https://logichain.000webhostapp.com/)
+
+
