@@ -1,0 +1,48 @@
+
+#SCdemo{
+  border-radius: 15px;
+  border: 3px solid white;
+  width: 680px;
+  height: 512px;
+  overflow: hidden;
+  margin: auto;}
+#fig1{
+  width: 680px;
+}
+
+li{
+  padding:15px;
+}
+
+.progress{
+  margin: auto;
+
+}
+
+#chart{
+  width: 110%;
+  height: auto;
+}
+#key{
+  margin-top: 20px;
+  width: 50%;
+  height: auto;
+}
+
+#taskHead{
+  margin-top: 30px;
+}
+
+
+.cd-fixed-bg.cd-bg-1 {
+  background-image: url("../../Assets/Retina-Display.jpg");
+}
+.cd-fixed-bg.cd-bg-2 {
+  background-image: url("../../Assets/blockchainfarm.jpg");
+}
+.cd-fixed-bg.cd-bg-3 {
+  background-image: url("../../Assets/Value-of-Data_Blockchain_Timing-1024x427.jpg");
+}
+.cd-fixed-bg.cd-bg-4 {
+  background-image: url("../../Assets/food.jpeg");
+}
