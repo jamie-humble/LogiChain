@@ -17,11 +17,13 @@
 
     // Data: link, title, image, date
 
+document.title = "LogiChain";
 
 var entry0 = {"link":"ProgressEntries/entry%230/ProgressPost.html","title":"Entry #0", "image":"Assets/fig1SC.PNG", "date":"Aug 7, 2021"};
-var entry1 = {"link":"ProgressEntries/googledocs/googleDrive.html","title":"Google Drive", "image":"Assets/googleDriveBanner.png", "date":"Aug 13, 2021"};
+var gdoc = {"link":"ProgressEntries/googledocs/googleDrive.html","title":"Google Drive", "image":"Assets/googleDriveBanner.png", "date":"Aug 13, 2021"};
+var entry1 = {"link":"ProgressEntries/entry%231/ProgressPost.html","title":"Entry #1", "image":"Assets/Blockchain-1200-PNG.png", "date":"Aug 23, 2021"};
 
-var diction = [entry0,entry1];
+var diction = [entry0,gdoc,entry1];
 
 const rows = document.getElementById("rows");
 

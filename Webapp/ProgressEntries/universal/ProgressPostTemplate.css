@@ -124,3 +124,18 @@ Modules - reusable parts of our design
     font-weight: 300;
   }
 }
+
+.progress{
+  margin: auto;
+
+}
+
+#chart{
+  width: 110%;
+  height: auto;
+}
+#key{
+  margin-top: 20px;
+  width: 50%;
+  height: auto;
+}

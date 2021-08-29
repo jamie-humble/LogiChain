@@ -1,24 +1,46 @@
 <html>
   <head>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="../universal/ProgressPostTemplate.css">
     <link rel="stylesheet" href="ProgressPost.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
 
   </head>
   <body>
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top navbar-custom">
+  
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="../../index.html"> < Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#ProOve">Project Overveiw</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#ProCha">Progress Chart</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#TLPro">Timeline Of Progress</a> 
+          </li>
+        </ul>
+      </div>
+    </nav>
+
     <main class="cd-main-content">
       <div class="cd-fixed-bg cd-bg-1">
-        <h1>Alternating fixed/scrolling backgrounds Pure CSS</h1>
+        <h1>Progress Chart</h1>
       </div> <!-- cd-fixed-bg -->
   
       <div class="cd-scrolling-bg cd-color-2">
         <div class="cd-container">
-          <p>
-            For this pen I included only the vanilla CSS and only that necessary  to demonstrate the effect but on the author's site at <a href="codyhouse.co/gem/alternate-fixed-scroll-backgrounds/">codyhouse.co</a>, the creators are using Sass which I think is nicer. But for the sake of simplicity for this example I took the easy way out. 
-            </p>
-            <p>
-            As anyone who has tried knows, implementing sample code such as this into a site with a different architecture can be a little tricky but I did manage to weave it into a pre-existing project with a little work. I love the effect!
+          <p class="lead">
+            Welcome to the second progress entry of logichain!
           </p>
+            <img src="gaant.PNG" class="progress" id="chart" alt="...">
+            <img src="gaantkey.PNG" class="progress" id="key" alt="...">
         </div> <!-- cd-container -->
       </div> <!-- cd-scrolling-bg -->
   

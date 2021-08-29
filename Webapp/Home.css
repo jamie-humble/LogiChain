@@ -149,8 +149,8 @@ body.blog .card--blog:not(.card--blog--main){min-height:130px;padding:40px 10px 
 }
 
 #contacts {
-  height: 500px;
-  background: url("https://images.unsplash.com/photo-1472289065668-ce650ac443d2?auto=format&fit=crop&w=1350&q=80"); 
+  height: 600px;
+  background: url("Assets/Blockchain-1200-PNG (1).png"); 
 }
 
 .bg-image {  
