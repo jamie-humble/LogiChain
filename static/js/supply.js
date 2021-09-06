@@ -50,7 +50,6 @@ class NodeRole {
     });
 
     var root = document.getElementById(this.nodetype);
-    console.log(this.nodetype);
     root.appendChild(div0);
 
   }
@@ -58,14 +57,12 @@ class NodeRole {
 
 // var delivery0 = new NodeRole("jamie","supplier","Slot 0","5/6/21");
 // using JSON from flask to create node roles
-console.log(roles.node_stat);
 var node_stat = roles[0].node_stat;
 
 
 var arr = [];
 var i = 0;
 for (const [key, value] of Object.entries(node_stat)) {
-  console.log(key, value);
   // if (key == "None"){
   //   continue
   // }
@@ -161,12 +158,10 @@ class TimelineNode {
 // var entries = [jam];
 
 var events = roles[1];
-console.log(events);
 var event_classes = [];
 
 for (let i = 0; i < events.length; i++) {
   const element = events[i];
-  console.log(element);
 
   if (element["escrow"]["bool"]){
     event_classes[i] = new TimelineNode(element["username"], element["node_type"],element["escrow"]["memo"],element["time"]);
@@ -184,7 +179,6 @@ $(document).ready(function(){
   $(".fill_slot").click(function(){
     var type = $(this).parent().parent().attr('id');
     // var type = this.parentNode.id;
-    console.log(type);
 
     $.ajax({
       type: "POST",
@@ -194,7 +188,6 @@ $(document).ready(function(){
       dataType: "json",
       success: function(response) {
         // var post_responce = response.responseText;
-        console.log(response);
         alert(response.msg);
         if (response.redirect){
           // redirect to same page/ reload

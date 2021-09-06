@@ -25,7 +25,11 @@ $(document).ready(function(){
     event.preventDefault();
     const data = new FormData(event.target);
     const value = Object.fromEntries(data.entries());
-    console.log({ value });
+    
+    if(/^[a-zA-Z0-9- ]*$/.test(value["username"]+value["password"]) == false) {
+      return alert('Your username or password contains illegal characters.');
+    }
+
     $(this).closest('form').find(".form-control").val("");
     
     if (value["type"] == "register"){
@@ -39,7 +43,7 @@ $(document).ready(function(){
       dataType: "json",
       success: function(response) {
         // var post_responce = response.responseText;
-        console.log(response);
+        
         alert(response.msg);
         if (response.redirect){
           window.location.href = response.redirect_url;

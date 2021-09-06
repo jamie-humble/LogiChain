@@ -123,7 +123,7 @@ class SmartContractDisplay {
 
 }
 
-console.log(loaded_contracts);
+(loaded_contracts);
 
 
 var contractDisplays = [];
@@ -167,7 +167,6 @@ $(document).ready(function(){
       data: JSON.stringify(jsonobject),
       dataType: "json",
       success: function(response) {
-        console.log(jsonobject)
         location.reload()
         alert(response.msg);
       },
@@ -214,12 +213,9 @@ $(document).ready(function(){
         alert(response.msg);
       },
       error: function(err) {
-        console.log(err);
         alert(err.responseText);
       }
     });
-
-
   });
 });
 
