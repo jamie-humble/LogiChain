@@ -1,8 +1,11 @@
+# This module is used to facilitate the creation of a user, including the XRPL wallet to go with it.
+
 import json
 from xrpl.clients import JsonRpcClient
 from xrpl.wallet import generate_faucet_wallet
 import hashlib
 
+# store global variables which control which network we are connecting to
 JSON_RPC_URL = "https://s.altnet.rippletest.net:51234/"
 client = JsonRpcClient(JSON_RPC_URL)
 
@@ -18,7 +21,8 @@ class User:
     self.ripple_wallet()
     self.json_append()
 
-
+  # The logichain prototype uses JSON files to store the supply chain's data,
+  # here we are using json to store the user object   
   def json_append(self):
         # read json user file
     with open('users.json', "r") as file:
@@ -38,6 +42,8 @@ class User:
         json.dump(data, file)
         return ("SUCCESS: User appended to JSON")
 
+  # Use the XRPL test network to generate an account, which is then appended to be apart of the User object
+  # This user can be seen and tracked from the actual testnet at https://test.xrptoolkit.com/
   def ripple_wallet(self):
     try:
       wallet = generate_faucet_wallet(client, debug=True)

@@ -25,6 +25,10 @@ finnish = xrpl.models.transactions.EscrowFinish.from_dict({
   "owner": obj["escrow"]["contract"]["account"]
 })
 
+        # self.escrow["contract"] = trans_signed.to_dict()
+        # self.escrow["contract_responce"] = trans_response.to_dict()
+        # self.escrow["sequence"] = trans.result["tx_json"]["Sequence"]
+
 
 
 ############### SIGN OBJECT #################

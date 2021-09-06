@@ -1,28 +1,34 @@
+# The purpose of this module is to handle all internal logic of the supply chain, including node interaction, escrows, payments and
+# other methods that must be given to server.py .
+
 import json
 import datetime
 import xrpl
 from xrpl.clients import WebsocketClient
 from xrpl.transaction import safe_sign_and_autofill_transaction
+from xrpl.utils import xrp_to_drops
+from xrpl.models.transactions import Payment
+from xrpl.transaction import send_reliable_submission
 import hashlib
 import os
 import math
 import time
-from xrpl.utils import xrp_to_drops
-from xrpl.models.transactions import Payment
-from xrpl.transaction import send_reliable_submission
 from itertools import count
 
 
-# This class will be used to manage session data of nodes which are currently active 
-# on the webapp and will be participating in the supply chain.
+# the supplyChain class controls almost all methods to do with users, escrows and the supply chain, this is because the Event class is never actually stored by the server.
+# the fact that most webapp data is stored on the JSON files and that supply_chain is the only global variable stored across modules means that this class must be capable of handling
+# methods based off JSON data.
 class SupplyChain:
   def __init__(self):
+    #node_types more or less controlls the basic logic of the node interaction, for example when a contract is made by the n'th node, it is simply sent to the n+1'th node 
     self.node_types = ["None", "delivery", "supplier", "manufacturer", "vendor", "retailer"]
-    # self.node_stat = {"delivery":[], "supplier":[], "manufacturer":[], "vendor":[], "retailer":[]}
+    # Node status monitors which users are currently apart of each nodetype based off JSON data
     self.node_stat = {x:[] for x in self.node_types}
     self.update_node_status()
     self.update_events()
 
+# this runs at the start of the server, if i have cleared the JSON event data, this function just prepares it for use later on
   def update_events(self):
     try:
       file = open("events.json", "r")
@@ -33,6 +39,8 @@ class SupplyChain:
         json.dump([],file)
         return ("SUCCESS: empty JSON modified")
 
+  # this also runs at the start of the server to populate node_stat and create a similar var named user_node_dict, which is populated with k, v pairs in the form of username, node.
+  # this seems arbitrary but it is usefull in later methods where more specific data surrounding users and their node types is required.
   def update_node_status(self):
     with open('users.json') as a:
       json_array = json.load(a)
@@ -51,8 +59,8 @@ class SupplyChain:
           
   # This method has questionable efficiency, instead of only changing self.user_node_dict() and then
   # referencing the variable in another script, this method allows for us to access node data through json
-  # which makes things very reliable but ive written it now. i would love some feedback as to whether i should
-  # just remove this method and use local variables.
+  # which makes things very reliable. i would love some feedback as to whether i should
+  # just remove this method and use local variables in future.
   # This being said, using JSON like this allows for people to stay a cirtain node type after rebooting the server. 
   def set_node_stat(self, username, node):
     valid = False
@@ -80,7 +88,7 @@ class SupplyChain:
     self.update_node_status()
     change = Event(username, {"bool":False},"node_change")
 
-
+  # simply finds the next node in the supply chain 
   def next_in_supplychain(self, _input):
     i=0
     for x in self.node_types:
@@ -89,6 +97,7 @@ class SupplyChain:
       i+=1
     return "ERROR: next node not found"
 
+  # simply finds the previous node in the supply chain 
   def prev_in_supplychain(self, _input):
     i=0
     for x in self.node_types:
@@ -97,6 +106,7 @@ class SupplyChain:
       i+=1
     return "ERROR: prev node not found"
 
+  # this is used to find an entire user object based off a unique username
   def get_user(self, username):
     with open('users.json') as a:
       json_array = json.load(a)
@@ -104,6 +114,7 @@ class SupplyChain:
       if x["username"] == username:
         return x
 
+  # returns all the users of a specific node type
   def get_users_by_node(self, node):
     with open('users.json') as a:
       json_array = json.load(a)
@@ -113,18 +124,21 @@ class SupplyChain:
         arr.append(x)
     return arr
 
+  # returns a contract value dict based off the sender of the contract
   def get_contract_values(self, username):
+    # this function is called at multiple points, where not all points have enough info to pass the whole user object,
+    # so we just account for those cases by getting the ser based off a username. 
     if isinstance(username,str):
       sender = supply_chain.get_user(username)
     else:
       sender = username
 
     try:
-      rec_wall = self.get_users_by_node(self.prev_in_supplychain(sender["node"]))[0]["wallet"]
+      recipient_wallet = self.get_users_by_node(self.prev_in_supplychain(sender["node"]))[0]["wallet"]
     except:
       return "ERROR: Please make sure there is a user in "+self.prev_in_supplychain(sender["node"])
     data = {"sender_wallet": sender["wallet"],
-            "recipient_wallet": rec_wall,
+            "recipient_wallet": recipient_wallet,
             # "signers": self.contract_signer_logic(sender["node"]),
             "signers": {"senders":sender["node"], "recipients":self.prev_in_supplychain(sender["node"])},
             "memo": self.contract_memo_logic(str(sender["node"])),
@@ -132,7 +146,7 @@ class SupplyChain:
             }
     return data
 
-
+  # the next 3 methods just find specific information for get_contract_values
   def contract_signer_logic(self, sender_node_type):
     return {"senders": [x["username"] for x in self.get_users_by_node(sender_node_type)], "recipients": [x["username"] for x in self.get_users_by_node(self.prev_in_supplychain(sender_node_type))]}
 
@@ -149,6 +163,7 @@ class SupplyChain:
       "fulfillment":random.upper()
     }
 
+  # returns a contract object based off of its unique hash value
   def find_contract_by_hash(self,hash):
     with open('events.json') as a:
       json_array = json.load(a)
@@ -157,6 +172,7 @@ class SupplyChain:
         return x
     return "could not be found"
 
+  # this method is used to update the JSON of a contract when changes have been made in python
   def update_contract_by_hash(self,signer,hash,mod):
     with open('events.json') as a:
       json_array = json.load(a)
@@ -177,19 +193,21 @@ class SupplyChain:
       json.dump(json_array,file)
     # return "could not be found"
 
+  # logic to sign a contract, which updates json and creates an event to display the signing event on the webapp
   def sign(self, signer, hash):
     _contract = self.find_contract_by_hash(hash)
-    # try:
-    self.update_contract_by_hash(signer,hash,{"type":"append_signature"})
-    _ = Event(signer, {"bool":False},"contract_signed")
-    _contract = self.find_contract_by_hash(hash)
-    if self.check_signature_fulfillment(_contract):
-      self.update_contract_by_hash(signer,hash,{"type":"update_status","val":"confirmed"})
-      return "Signature added to complete contract!"
-    return "Signature added to incomplete escrow, you shouldnt really be reading this, but if you are, make sure you're not in the node role you sent the escrow to!"
-    # except:
-    #   return "ERROR: signature could not be added"
+    try:
+      self.update_contract_by_hash(signer,hash,{"type":"append_signature"})
+      _ = Event(signer, {"bool":False},"contract_signed")
+      _contract = self.find_contract_by_hash(hash)
+      if self.check_signature_fulfillment(_contract):
+        self.update_contract_by_hash(signer,hash,{"type":"update_status","val":"confirmed"})
+        return "Signature added to complete contract!"
+      return "Signature added to incomplete escrow, you shouldnt really be reading this, but if you are, make sure you're not in the node role you sent the escrow to!"
+    except:
+      return "ERROR: signature could not be added"
 
+  # logic to cancel a contract, which updates json and creates an event to display the canceled event on the webapp
   def cancel(self, signer, hash):
     _contract = self.find_contract_by_hash(hash)
     try:
@@ -202,6 +220,7 @@ class SupplyChain:
     except:
       return "ERROR: contract could not be declined"
 
+  # checks whether all users have signed and if so, execute the transaction on XRPL
   def check_signature_fulfillment(self, obj):
     # Check if all signers have signed
     if obj["escrow"]["signatures"] == ([obj["escrow"]["signers"]["recipients"]]+[obj["escrow"]["signers"]["senders"]]):
@@ -227,27 +246,18 @@ class SupplyChain:
       # sign transaction
       with WebsocketClient("wss://s.altnet.rippletest.net:51233") as client:
         trans_signed = safe_sign_and_autofill_transaction(trans,_wallet,client)
-        # print(trans_signed)
 
         # submit transaction
         trans_response = send_reliable_submission(trans_signed, client)
-        # print("\n"+str(trans_response.__dict__))
-
-        # self.escrow["contract"] = trans_signed.to_dict()
-        # self.escrow["contract_responce"] = trans_response.to_dict()
-        # self.escrow["sequence"] = trans.result["tx_json"]["Sequence"]
-        
-
         return True
     return False
 
 
 
-# This class is used to record events and manage smart contracts
+# This class is used to record events on JSON and manage smart contracts
 class Event:
   def __init__(self, username, escrow, event_type):
     self.username = username
-    # self.nodetype = nodetype
     self.time = str(datetime.datetime.now().strftime("%x"))
     self.event_type = event_type
     self.escrow = escrow
@@ -255,6 +265,7 @@ class Event:
 
     self.node_type = supply_chain.user_node_dict[self.username]
 
+    # create event messages to show on webpage
     if event_type == "node_change":
       supply_chain.update_node_status()
       if self.node_type == "None": self.node_type = "spectator"
@@ -299,13 +310,9 @@ class Event:
         json.dump(data, file)
         return ("SUCCESS: Event appended to JSON")
 
+  # This function is used to create a JSON reprisentation of a smart contract, since XRPL will not let us create an actuall
+  # escrow, when this 'contract' is filfilled we will send an XRPL transaction.
   def create_escrow(self):
-    # our smart contract function, EscrowCreate cannot intake signatures that would be needed to fullfil
-    # the contract. so to work around this and also save time, we are going to fullfill the contract using 
-    # a cryptographic fulfillment condition, which is given to the contract, when our PYTHON server has
-    # received all needed 'signatures from the webapp'.
-    # TLDR: we are not using the official blockchain signature functionality, but instead confirming
-    #       signatures with python.
 
     data = supply_chain.get_contract_values(self.username)
         
@@ -328,7 +335,6 @@ class Event:
     self.escrow["value_dict"] = value_dict
     self.escrow["hash"] = self.escrow["value_dict"]["condition"]
 
-
     self.escrow["status"] = "pending"
     self.escrow["memo"] = data["memo"]
     self.escrow["signers"] = data["signers"]
@@ -336,6 +342,7 @@ class Event:
 
     return "Smart contract created"
 
+# This class is used to construct a wallet object to be used in the XRPL
 class wallet_json_to_object:
   def __init__(self, json):
     self.seed = json["seed"]

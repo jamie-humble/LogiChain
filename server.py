@@ -1,3 +1,5 @@
+# The purpose of this document is to run a flask server and interact with the webapp using the other two modules.
+
 import flask
 from flask import jsonify, request, session, redirect, url_for
 import users
@@ -10,7 +12,7 @@ from xrpl.account import get_balance
 
 
 app = flask.Flask(__name__)
-app.config["DEBUG"] = True
+app.config["DEBUG"] = False
 app.config.update(
     SECRET_KEY=b'\xe8\x87\xb7\xa3\x8c\xd6;AJOEH\x90\xf2\x11\x99'
     # SECRET_KEY = os.urandom(16)
@@ -23,7 +25,7 @@ def index():
     return flask.render_template("index.html")
 
 
-
+# this function handles login and register logic
 @app.route('/postlogin', methods=['POST'])
 def postmethod():
     data = request.get_json()
@@ -41,12 +43,9 @@ def postmethod():
                 if k == "password" and hashlib.sha256(data["password"].encode()).hexdigest() == v and username_bool:
                     session["username"]=data["username"]
                     return {"msg":"SUCCESS: User is signed in", "redirect": True, "redirect_url":"/dashboard"}
-                    
         return "ERROR: Incorrect username or password"
-
     elif data["type"] == "register":
         # if username already exists, error
-        
         try:
             with open('users.json') as a:
                 json_array = json.load(a)
@@ -69,8 +68,8 @@ def postmethod():
 
 @app.route("/dashboard")
 def check():
+    # this try expression is to catch whether or not a user is signed in
     try: 
-        # check if exists
         _ = session["username"]
         return flask.render_template("landing.html")
     except:
@@ -104,6 +103,7 @@ def node_filled():
     except:
         return "ERROR: node could not be changed"
 
+
 @app.route("/dashboard/manage")
 def manage():
     # try catch will pop if session[username] is undefined -- user not logged in
@@ -119,14 +119,14 @@ def manage():
     for x in json_manage:
         if x["escrow"]["bool"]:
             # print("Loading contract:"+x["escrow"]["hash"]) # Makes webapp slower 
-
+            # we are passing _data as the contracts which the user is a signer in or participates in
             if supply_chain.get_user(session["username"])["node"] == x["escrow"]["signers"]["senders"]:
                 _data.append(["incoming", x])
             elif supply_chain.get_user(session["username"])["node"] == x["escrow"]["signers"]["recipients"]:
                 _data.append(["outgoing", x])
     return flask.render_template("manage.html", _data = json.dumps(_data))
 
-
+# either signs or cancels a contract
 @app.route("/manageescrow", methods=['POST'])
 def manage_escrow():
     data = request.get_json()
@@ -162,15 +162,12 @@ def create_escrow():
             )[0]["username"]
         except:
             return "ERROR: receiving user could not be established, please make sure there is a user to receive escrow"
-    # try:
     contract = Event(user,{"bool":True, "amount":50},"escrowCreate")
     if contract.ERROR[0]:
         return contract.ERROR[1]
     return flask.jsonify({"msg":"Smart contract created!", "redirect": True, "redirect_url":"/dashboard/manage#"})
     
-    # except:
-    #     return "Smart contract could not be created, please make sure there is a user to receive escrow"
-
+# gets account data of signed in user
 @app.route("/dashboard/account")
 def account():
     try:
