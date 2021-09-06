@@ -182,4 +182,6 @@ def logout():
     print("Logout")
     return  flask.jsonify({"msg":"You have been logged out, come back soon!", "redirect": True, "redirect_url":"/"})
 
-app.run(host="0.0.0.0")
+port = int(os.environ.get("PORT", 5000))
+
+app.run(host="0.0.0.0", port=port)
