@@ -10,15 +10,12 @@ import hashlib
 from xrpl.clients import WebsocketClient
 from xrpl.account import get_balance
 
-
 app = flask.Flask(__name__)
 app.config["DEBUG"] = False
 app.config.update(
     SECRET_KEY=b'\xe8\x87\xb7\xa3\x8c\xd6;AJOEH\x90\xf2\x11\x99'
     # SECRET_KEY = os.urandom(16)
 )
-
-
 
 @app.route("/")
 def index():
@@ -185,4 +182,4 @@ def logout():
     print("Logout")
     return  flask.jsonify({"msg":"You have been logged out, come back soon!", "redirect": True, "redirect_url":"/"})
 
-app.run()
+app.run(host="0.0.0.0")
