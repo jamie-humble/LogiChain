@@ -1,0 +1,211 @@
+[
+  {
+    "username": "jamie",
+    "time": "09/06/21",
+    "event_type": "node_change",
+    "escrow": {
+      "bool": false
+    },
+    "ERROR": [
+      false,
+      ""
+    ],
+    "node_type": "supplier",
+    "memo": "jamie has become a supplier node!"
+  },
+  {
+    "username": "jamie",
+    "time": "09/06/21",
+    "event_type": "node_change",
+    "escrow": {
+      "bool": false
+    },
+    "ERROR": [
+      false,
+      ""
+    ],
+    "node_type": "manufacturer",
+    "memo": "jamie has become a manufacturer node!"
+  },
+  {
+    "username": "GreyFox2",
+    "time": "09/06/21",
+    "event_type": "node_change",
+    "escrow": {
+      "bool": false
+    },
+    "ERROR": [
+      false,
+      ""
+    ],
+    "node_type": "retailer",
+    "memo": "GreyFox2 has become a retailer node!"
+  },
+  {
+    "username": "GreyFox2",
+    "time": "09/06/21",
+    "event_type": "node_change",
+    "escrow": {
+      "bool": false
+    },
+    "ERROR": [
+      false,
+      ""
+    ],
+    "node_type": "vendor",
+    "memo": "GreyFox2 has become a vendor node!"
+  },
+  {
+    "username": "GreyFox2",
+    "time": "09/06/21",
+    "event_type": "node_change",
+    "escrow": {
+      "bool": false
+    },
+    "ERROR": [
+      false,
+      ""
+    ],
+    "node_type": "supplier",
+    "memo": "GreyFox2 has become a supplier node!"
+  },
+  {
+    "username": "GreyFox2",
+    "time": "09/06/21",
+    "event_type": "escrowCreate",
+    "escrow": {
+      "bool": true,
+      "amount": 50,
+      "value_dict": {
+        "account": "rNfLFfzFoa25uxjPVGFCo4mjum9DrKBmAC",
+        "amount": "50000000",
+        "condition": "B4BE161016CEE30EBDAFD2D5CD37A2166992FFCEA552F72F7186DDB144A738E7",
+        "cancel_after": 684289354,
+        "destination": "rKPPCvk69QHLqX1qxBagqroPF2f1VJeMfK"
+      },
+      "hash": "B4BE161016CEE30EBDAFD2D5CD37A2166992FFCEA552F72F7186DDB144A738E7",
+      "status": "confirmed",
+      "memo": "The supplier node made a contract to send delivery some products.",
+      "signers": {
+        "senders": "supplier",
+        "recipients": "delivery"
+      },
+      "signatures": [
+        "delivery",
+        "supplier"
+      ]
+    },
+    "ERROR": [
+      false,
+      ""
+    ],
+    "node_type": "supplier",
+    "node": null
+  },
+  {
+    "username": "jamie",
+    "time": "09/06/21",
+    "event_type": "escrowCreate",
+    "escrow": {
+      "bool": true,
+      "amount": 50,
+      "value_dict": {
+        "account": "rfurvi8rKnh7KNJvw3NbLDRzUAimgEcNMN",
+        "amount": "50000000",
+        "condition": "49C8A13FC50587B7FE28662CE693703503B1C2E9B71171B91C1318A2413B86FE",
+        "cancel_after": 684289357,
+        "destination": "rNfLFfzFoa25uxjPVGFCo4mjum9DrKBmAC"
+      },
+      "hash": "49C8A13FC50587B7FE28662CE693703503B1C2E9B71171B91C1318A2413B86FE",
+      "status": "pending",
+      "memo": "The manufacturer node made a contract to send supplier some products.",
+      "signers": {
+        "senders": "manufacturer",
+        "recipients": "supplier"
+      },
+      "signatures": [
+        "supplier"
+      ]
+    },
+    "ERROR": [
+      false,
+      ""
+    ],
+    "node_type": "manufacturer",
+    "node": null
+  },
+  {
+    "username": "GreyFox2",
+    "time": "09/06/21",
+    "event_type": "escrowCreate",
+    "escrow": {
+      "bool": true,
+      "amount": 50,
+      "value_dict": {
+        "account": "rNfLFfzFoa25uxjPVGFCo4mjum9DrKBmAC",
+        "amount": "50000000",
+        "condition": "45C546666D716332278ED32E58B1A6CFD70127D2CD4064D8B5E021B51A1EE79E",
+        "cancel_after": 684289363,
+        "destination": "rKPPCvk69QHLqX1qxBagqroPF2f1VJeMfK"
+      },
+      "hash": "45C546666D716332278ED32E58B1A6CFD70127D2CD4064D8B5E021B51A1EE79E",
+      "status": "cancelled",
+      "memo": "The supplier node made a contract to send delivery some products.",
+      "signers": {
+        "senders": "supplier",
+        "recipients": "delivery"
+      },
+      "signatures": [
+        "delivery"
+      ]
+    },
+    "ERROR": [
+      false,
+      ""
+    ],
+    "node_type": "supplier",
+    "node": null
+  },
+  {
+    "username": "GreyFox2",
+    "time": "09/06/21",
+    "event_type": "contract_signed",
+    "escrow": {
+      "bool": false
+    },
+    "ERROR": [
+      false,
+      ""
+    ],
+    "node_type": "supplier",
+    "memo": "GreyFox2 the supplier, has signed a contract!"
+  },
+  {
+    "username": "GreyFox2",
+    "time": "09/06/21",
+    "event_type": "contract_cancelled",
+    "escrow": {
+      "bool": false
+    },
+    "ERROR": [
+      false,
+      ""
+    ],
+    "node_type": "supplier",
+    "memo": "GreyFox2 the supplier, has cancelled a contract!"
+  },
+  {
+    "username": "GreyFox2",
+    "time": "09/06/21",
+    "event_type": "node_change",
+    "escrow": {
+      "bool": false
+    },
+    "ERROR": [
+      false,
+      ""
+    ],
+    "node_type": "spectator",
+    "memo": "GreyFox2 has become a spectator node!"
+  }
+]
