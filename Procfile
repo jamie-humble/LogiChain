@@ -1,1 +1,1 @@
-web: cd Server && python3 server.py
+web: python3 server.py
