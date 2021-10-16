@@ -5,8 +5,8 @@
 If a function has had an expected error, the function should return a tuple like so.
 ( "ERROR", "Wallet creation failed" )
 # Success
-When certain functions succede, they will return a tuple like so. 
-( "SUCCESS", "Wallet successfuly created" )
+When certain functions succeed, they will return a tuple like so. 
+( "SUCCESS", "Wallet successfully created" )
 
 # time
 datetime.datetime().now().strftime("%x")

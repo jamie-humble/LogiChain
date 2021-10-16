@@ -4,8 +4,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>Bootstrap User Management Data Table</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
+  <title>LogiDesk Contracts</title>
+  <link href="{{ url_for('static', filename="img/logobyte.png") }}" rel="icon">
+  <link href="{{ url_for('static', filename="img/logobyte.png") }}" rel="apple-touch-icon">  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -94,16 +95,132 @@
       </nav>
 
       <main class="col-md-9 ml-sm-auto col-lg-10 px-md-4 py-4">
-        <nav aria-label="breadcrumb">
-          <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/dashboard">Dashboard</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Contracts</li>
-          </ol>
-        </nav>
-        <h1 class="h2">Smart Contract Hub</h1>
-        <p>
-          Use this page to manage and create smart contracts as a payment method for services on the supply chain.
-        </p>
+
+        <div class="info-hide">
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="/dashboard">Dashboard</a></li>
+              <li class="breadcrumb-item active" aria-current="page">Contracts</li>
+            </ol>
+          </nav>
+          <h1 class="h2">Smart Contract Hub</h1>
+          <p>
+            Use this page to manage and create smart contracts as a payment method for services on the supply chain.
+          </p>
+        </div>
+
+
+        <div class="order-info shadow">
+          <div class="row justify-content-end">
+            <button type="button" class="close col " data-dismiss="alert" aria-label="Close" style="max-width: 70px; margin:10px 50px 0 0;">
+              <span class="justify-content-center" style="font-size: 14px;">Close</span><span aria-hidden="true"> &times;</span>
+            </button>
+          </div>
+          <div class="row info-outgoing-order justify-content-md-center align-items-center">
+            <div class="col">
+              <div class="container-xl" style="width: 500px !important;">
+                <div class="table-responsive">
+                  <div class="table-wrapper" style="min-width: 200px !important;">
+                    <div class="table-title">
+                      <div class="row">
+                        <div class="col" >
+                          <h2>Order Summary</h2>
+                        </div>
+                      </div>
+                    </div>
+                    <table class="table table-striped table-hover">
+                      <thead>
+                        <tr>
+                          <th>Amount</th>
+                          <th>Item</th>
+                          <th>Price</th>
+                        </tr>
+                      </thead>
+                      <tbody id="smartcontract_append">
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <div style="margin-left: 30px;">
+                <p><span class="h2">Subtotal </span>$52</p>
+                <p><span class="h5">Delivery </span>$20</p>
+
+              </div>
+            </div>
+            <div class="col-xl-3 col-lg-6 mb-4">
+              <div class="bg-white rounded-lg p-5 ">
+                <h2 class="h6 font-weight-bold text-center mb-4">Overall progress</h2>
+                <!-- Progress bar 1 -->
+                <div class="progress mx-auto" data-value='80'>
+                  <span class="progress-left">
+                                <span class="progress-bar border-primary"></span>
+                  </span>
+                  <span class="progress-right">
+                                <span class="progress-bar border-primary"></span>
+                  </span>
+                  <div class="progress-value w-100 h-100 rounded-circle d-flex align-items-center justify-content-center">
+                    <div class="h2 font-weight-bold">80<sup class="small">%</sup></div>
+                  </div>
+                </div>
+                <!-- END -->
+        
+                <!-- Demo info -->
+                <div class="row text-center mt-4">
+                  <div class="col-6 border-right">
+                    <div class="h4 font-weight-bold mb-0">28%</div><span class="small text-gray">Preparation</span>
+                  </div>
+                  <div class="col-6">
+                    <div class="h4 font-weight-bold mb-0">60%</div><span class="small text-gray">Delivery</span>
+                  </div>
+                </div>
+                <!-- END -->
+              </div>
+            </div>
+            <div class="col">
+              <div class="row info-incoming" style="width: 300px; margin: auto;">
+                <button type="button" class="col btn btn-success btn-lg">Accept Order</button>
+                <div class="w-100" style="margin: 10px;"> </div>
+                <button type="button" class="col btn btn-danger btn-lg">Decline Order</button>
+              </div>
+
+              <div class="row info-outgoing-update">
+                <div class="container-xl" style="width: 500px !important;">
+                  <div class="table-responsive">
+                    <div class="table-wrapper" style="min-width: 200px !important;">
+                      <div class="table-title">
+                        <div class="row">
+                          <div class="col" >
+                            <h2>Status Updates</h2>
+                          </div>
+                        </div>
+                      </div>
+                      <table class="table table-striped table-hover">
+                        <thead>
+                          <tr>
+                            <th>Amount</th>
+                            <th>Item</th>
+                            <th>Price</th>
+                          </tr>
+                        </thead>
+                        <tbody id="smartcontract_append">
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div> 
+          </div>
+        </div>
+
+        <button type="button" style="margin-top:15px;" class="btn btn-primary btn-lg btn-block">
+          <span style="font-size: 16px;" class="material-icons">
+            add
+          </span>
+          
+          Create Order
+        </button>
 
         <div class="container-xl">
           <div class="table-responsive">
@@ -128,100 +245,6 @@
                   </tr>
                 </thead>
                 <tbody id="smartcontract_append">
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-
-
-        <div class="container-xl">
-          <div class="table-responsive">
-            <div class="table-wrapper">
-              <div class="table-title SC-Title">
-                <div class="row">
-                  <div class="col-sm-5">
-                    <h2>Incoming Product Orders</h2>
-                  </div>
-                  <div class="col-sm-7">
-                    <a id="order_request"  class="btn btn-secondary"><i class="material-icons">&#xE147;</i> <span>Request an Order</span></a>
-                  </div>
-                </div>
-              </div>
-              <table class="table table-striped table-hover">
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>Sender</th>
-                    <th>Date Created</th>
-                    <th>Amount</th>
-                    <th>Role</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody id="incoming">
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-
-        <div class="container-xl">
-          <div class="table-responsive">
-            <div class="table-wrapper">
-              <div class="table-title SC-Title">
-                <div class="row">
-                  <div class="col-sm-5">
-                    <h2>Your Products</h2>
-                  </div>
-                  <div class="col-sm-7">
-                    <a id="order_send" class="btn btn-secondary"><i class="material-icons">&#xE147;</i> <span>Send an Order</span></a>
-                  </div>
-                </div>
-              </div>
-              <table class="table table-striped table-hover">
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>Sender</th>
-                    <th>Date Created</th>
-                    <th>Amount</th>
-                    <th>Role</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody id="product">
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-
-        <div class="container-xl">
-          <div class="table-responsive">
-            <div class="table-wrapper">
-              <div class="table-title SC-Title">
-                <div class="row">
-                  <div class="col-sm-5">
-                    <h2>Outgoing Product Orders</h2>
-                  </div>
-                </div>
-              </div>
-              <table class="table table-striped table-hover">
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>Sender</th>
-                    <th>Date Created</th>
-                    <th>Amount</th>
-                    <th>Role</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody id="outgoing">
                 </tbody>
               </table>
             </div>

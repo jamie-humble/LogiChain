@@ -9,9 +9,10 @@ import os
 import hashlib
 from xrpl.clients import WebsocketClient
 from xrpl.account import get_balance
+from constants import *
 
 app = flask.Flask(__name__)
-app.config["DEBUG"] = False
+app.config["DEBUG"] = True
 app.config.update(
     SECRET_KEY=b'\xe8\x87\xb7\xa3\x8c\xd6;AJOEH\x90\xf2\x11\x99'
     # SECRET_KEY = os.urandom(16)
@@ -21,61 +22,77 @@ app.config.update(
 def index():
     return flask.render_template("index.html")
 
+@app.route("/signin")
+def signin():
+    return flask.render_template("signin.html")
 
-# this function handles login and register logic
-@app.route('/postlogin', methods=['POST'])
-def postmethod():
+@app.route("/signup")
+def signup():
+    return flask.render_template("signup.html")
+
+@app.route("/postsignup", methods=['POST'])
+def post_signup():
     data = request.get_json()
-    if data["type"] == "signin":
-        # find user and sign in
-        with open('users.json') as a:
+    # if username already exists, error
+    try:
+        with open(USER_FILE) as a:
             json_array = json.load(a)
+    except FileNotFoundError:
+        return "ERROR: Database not found"
+    
+    try:
         for x in json_array:
-            username_bool = False
-            for k,v in x.items():
-                if k == "username" and data["username"] == v:
-                    # the username has been found
-                    username_bool = True
-                # This is where we hash the given password
-                if k == "password" and hashlib.sha256(data["password"].encode()).hexdigest() == v and username_bool:
-                    session["username"]=data["username"]
-                    return {"msg":"SUCCESS: User is signed in", "redirect": True, "redirect_url":"/dashboard"}
-        return "ERROR: Incorrect username or password"
-    elif data["type"] == "register":
-        # if username already exists, error
-        try:
-            with open('users.json') as a:
-                json_array = json.load(a)
-            for x in json_array:
-                username_bool = False
-                for k,v in x.items():
-                    if k == "username" and data["username"] == v:
-                        return "ERROR: Username already exists"
-        except:
-            # I would have liked to make these try catches nested, but it would not stop spitting type errors at me,
-            # so this pass to a non-nested try does the trick, its just a little ugly.
-            pass
-        try:
-            users.User(data["username"], data["password"])
-            print("SUCCESS: User Successfully created")
-            return "SUCCESS: User Successfully created"
-        except:
-            return {"msg":"ERROR: User could not be created", "redirect": False, "redirect_url":"/dashboard"}
+            if x["username"] == data["username"]:
+                return "ERROR: Username already exists"
+    except KeyError:
+        return "ERROR: KeyError in database lookup"
+
+    # I would have liked to make these try catches nested, but it would not stop spitting type errors at me,
+    # so this pass to a non-nested try does the trick, its just a little ugly.
+    # pass
+    try:
+        users.User(
+            data["username"], 
+            data["password"], 
+            data["role"], 
+            data["firstname"],
+            data["lastname"],
+            data["email"],
+            data["phone"]
+        )
+        session["username"] = data["username"]
+        return {"msg":"User Successfully created", "redirect": True, "redirect_url":"/LogiDesk"}
+    except FileNotFoundError:
+        return {"msg":"ERROR: User could not be created", "redirect": False, "redirect_url":""}
 
 
-@app.route("/dashboard")
+@app.route("/postsignin", methods=['POST'])
+def post_signin():
+    data = request.get_json()
+    # find user and sign in
+    with open(USER_FILE) as a:
+        json_array = json.load(a)
+    for user in json_array:
+        if user["username"] == data["username"]:
+            if user["password"] == hashlib.sha256(data["password"].encode()).hexdigest():
+                session["username"] = data["username"]
+                return {"msg":"User is signed in", "redirect": True, "redirect_url":"/LogiDesk"}
+
+    return "ERROR: Incorrect username or password"
+
+@app.route("/LogiDesk")
 def check():
     # this try expression is to catch whether or not a user is signed in
     try: 
         _ = session["username"]
-        return flask.render_template("landing.html")
+        return flask.render_template("LogiDesk/index.html")
     except:
         return flask.render_template("index.html")
 
 
 @app.route("/dashboard/supply")
 def supply():
-    with open('events.json') as a:
+    with open('EVENT_FILE') as a:
         json_array = json.load(a)
     supply_chain.update_node_status()
     _data = [supply_chain.__dict__, json_array]
@@ -101,7 +118,7 @@ def node_filled():
         return "ERROR: node could not be changed"
 
 
-@app.route("/dashboard/manage")
+@app.route("/LogiChain/contract")
 def manage():
     # try catch will pop if session[username] is undefined -- user not logged in
     try:
@@ -111,7 +128,7 @@ def manage():
     # we will append the current user, so that the webapp can figure out the relative nature of the transaction
     # i.e incoming or outgoing 
     _data = []
-    with open('events.json') as a:
+    with open('EVENT_FILE') as a:
         json_manage = json.load(a)
     for x in json_manage:
         if x["escrow"]["bool"]:

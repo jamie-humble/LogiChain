@@ -14,7 +14,12 @@ import os
 import math
 import time
 from itertools import count
+from json_handling import json_append, event_cleared_repair
+from users import construct_node_wallets
+from constants import *
 
+
+NODETYPES = ["delivery", "supplier", "manufacturer", "vendor", "retailer"]
 
 # the supplyChain class controls almost all methods to do with users, escrows and the supply chain, this is because the Event class is never actually stored by the server.
 # the fact that most webapp data is stored on the JSON files and that supply_chain is the only global variable stored across modules means that this class must be capable of handling
@@ -22,93 +27,32 @@ from itertools import count
 class SupplyChain:
   def __init__(self):
     #node_types more or less controlls the basic logic of the node interaction, for example when a contract is made by the n'th node, it is simply sent to the n+1'th node 
-    self.node_types = ["None", "delivery", "supplier", "manufacturer", "vendor", "retailer"]
     # Node status monitors which users are currently apart of each nodetype based off JSON data
-    self.node_stat = {x:[] for x in self.node_types}
-    self.update_node_status()
-    self.update_events()
-
-# this runs at the start of the server, if i have cleared the JSON event data, this function just prepares it for use later on
-  def update_events(self):
-    try:
-      file = open("events.json", "r")
-      json_object = json.load(file)
-      file.close()
-    except:
-      with open('events.json', "w") as file:
-        json.dump([],file)
-        return ("SUCCESS: empty JSON modified")
-
-  # this also runs at the start of the server to populate node_stat and create a similar var named user_node_dict, which is populated with k, v pairs in the form of username, node.
-  # this seems arbitrary but it is usefull in later methods where more specific data surrounding users and their node types is required.
-  def update_node_status(self):
-    with open('users.json') as a:
-      json_array = json.load(a)
-    # Simple dictionary to tell us which node each user is currently assigned to
-    self.user_node_dict = {x["username"]: x["node"] for x in json_array}
-
-    for k,v in self.node_stat.items():
-      for k1, v1 in self.user_node_dict.items():
-        if k1 in v:
-          v.remove(k1)
-
-    for k,v in self.node_stat.items():
-      for k1, v1 in self.user_node_dict.items():
-        if v1 == k:
-          v.append(k1)
-          
-  # This method has questionable efficiency, instead of only changing self.user_node_dict() and then
-  # referencing the variable in another script, this method allows for us to access node data through json
-  # which makes things very reliable. i would love some feedback as to whether i should
-  # just remove this method and use local variables in future.
-  # This being said, using JSON like this allows for people to stay a cirtain node type after rebooting the server. 
-  def set_node_stat(self, username, node):
-    valid = False
-    for x in self.node_types:
-      if node == x:
-        valid = True
-    if not valid: return "ERROR: Invalid node type"
-
-    #JSON editing, first we initaiate a python object of the JSON
-    file = open("users.json", "r")
-    json_object = json.load(file)
-    file.close()
-
-    # then we make changes to the python object
-    for x in json_object:
-      if x["username"] == username:
-        x["node"] = node
-
-    # and finally replace the old json with our updates
-    file = open("users.json", "w")
-    json.dump(json_object, file)
-    file.close()
-
-    #update our object
-    self.update_node_status()
-    change = Event(username, {"bool":False},"node_change")
+    self.node_stat = {x:[] for x in NODETYPES}
+    event_cleared_repair()
+    print(construct_node_wallets())
 
   # simply finds the next node in the supply chain 
   def next_in_supplychain(self, _input):
     i=0
-    for x in self.node_types:
+    for x in NODETYPES:
       if _input == x:
-        return self.node_types[i+1]
+        return NODETYPES[i+1]
       i+=1
     return "ERROR: next node not found"
 
   # simply finds the previous node in the supply chain 
   def prev_in_supplychain(self, _input):
     i=0
-    for x in self.node_types:
+    for x in NODETYPES:
       if _input == x:
-        return self.node_types[i-1]
+        return NODETYPES[i-1]
       i+=1
     return "ERROR: prev node not found"
 
   # this is used to find an entire user object based off a unique username
   def get_user(self, username):
-    with open('users.json') as a:
+    with open(USER_FILE) as a:
       json_array = json.load(a)
     for x in json_array:
       if x["username"] == username:
@@ -116,7 +60,7 @@ class SupplyChain:
 
   # returns all the users of a specific node type
   def get_users_by_node(self, node):
-    with open('users.json') as a:
+    with open(USER_FILE) as a:
       json_array = json.load(a)
     arr = []
     for x in json_array:
@@ -165,7 +109,7 @@ class SupplyChain:
 
   # returns a contract object based off of its unique hash value
   def find_contract_by_hash(self,hash):
-    with open('events.json') as a:
+    with open('EVENT_FILE') as a:
       json_array = json.load(a)
     for x in json_array:
       if x["escrow"]["bool"] and x["escrow"]["hash"] == hash:
@@ -174,7 +118,7 @@ class SupplyChain:
 
   # this method is used to update the JSON of a contract when changes have been made in python
   def update_contract_by_hash(self,signer,hash,mod):
-    with open('events.json') as a:
+    with open('EVENT_FILE') as a:
       json_array = json.load(a)
     i=0
     for x in json_array:
@@ -189,7 +133,7 @@ class SupplyChain:
           json_array[i]["escrow"]["status"] = mod["val"] 
           break
       i+=1
-    with open('events.json', "w") as file:
+    with open('EVENT_FILE', "w") as file:
       json.dump(json_array,file)
     # return "could not be found"
 
@@ -203,7 +147,7 @@ class SupplyChain:
       if self.check_signature_fulfillment(_contract):
         self.update_contract_by_hash(signer,hash,{"type":"update_status","val":"confirmed"})
         return "Signature added to complete contract!"
-      return "Signature added to incomplete escrow, you shouldnt really be reading this, but if you are, make sure you're not in the node role you sent the escrow to!"
+      return "Signature added to incomplete escrow, you shouldn't really be reading this, but if you are, make sure you're not in the node role you sent the escrow to!"
     except:
       return "ERROR: signature could not be added"
 
@@ -285,35 +229,13 @@ class Event:
           self.ERROR[1] = self.create_escrow()
           print("Event() escaped", self.ERROR)
         else:
-          self.json_append()
+          json_append('EVENT_FILE',self.__dict__)
     else:
-      self.json_append()
-
-
-
-  def json_append(self):
-      # read json file
-    with open('events.json', "r") as file:
-      try:
-        data = json.load(file)
-      except:
-        data = False
-    # if the json file is empty, create an array with a dict in it
-    with open('events.json', "w") as file:
-      if not data: 
-        json.dump([self.__dict__],file)
-        return ("SUCCESS: Event appended to empty JSON")
-      else:
-        # if the json file is populated, add the new event 
-        data.append(self.__dict__)
-        # print(data)
-        json.dump(data, file)
-        return ("SUCCESS: Event appended to JSON")
+      json_append('EVENT_FILE',self.__dict__)
 
   # This function is used to create a JSON reprisentation of a smart contract, since XRPL will not let us create an actuall
   # escrow, when this 'contract' is filfilled we will send an XRPL transaction.
   def create_escrow(self):
-
     data = supply_chain.get_contract_values(self.username)
         
     # if there is no user to receive transaction, return error msg higher up

@@ -1,0 +1,52 @@
+[
+  {
+    "type": "delivery",
+    "wallet": {
+      "seed": "sEdVfLWS9sLGEFiu8fok1yKzVRvybP2",
+      "public_key": "EDAD16DD1E8F3647EC308A2D8DC8A89519640F1507F5FFA5AD44FF1E19CDADA61D",
+      "private_key": "ED8AA02402808BDBFB7647E8881EA130F3E511A297F06D043841D25F3C8484CD19",
+      "classic_address": "rNYBwhKD7v8GkF1niApc46hX1ZQhDZHSuQ",
+      "sequence": 21335582
+    }
+  },
+  {
+    "type": "supplier",
+    "wallet": {
+      "seed": "sEdTbsfuWUN5QbdVTEX5uoHpqZ9B5Lq",
+      "public_key": "EDFA61F5CF0C74C7D4866A4A7950A526AE362F99800488778CA4AB4EC92DCEDCF8",
+      "private_key": "ED22E196FB47ECA375093B1C1878A5E8333646D7F7D2A22EA839C86E904C18BFA",
+      "classic_address": "rEyc2iKUPLeoAnQFuazTaYtvwZhDzCdtAY",
+      "sequence": 21335585
+    }
+  },
+  {
+    "type": "manufacturer",
+    "wallet": {
+      "seed": "sEdS2FjmSq6U2DtzR6NWgk8vitW7dWu",
+      "public_key": "EDD6B831FB17FB4B153A43D427058D8A7663EA3C2064B7748772E4D77B74CCBC4B",
+      "private_key": "ED90DFB996A70462A39119C5E8BFC835FCBC31545B0CF8604E9A92540BECA84D3D",
+      "classic_address": "r3ZDhgBXBX7McvzSAUQ9SywuXK9y1cEt56",
+      "sequence": 21335588
+    }
+  },
+  {
+    "type": "vendor",
+    "wallet": {
+      "seed": "sEd7YPA1tXt1p4Lm5rTyKYncaAct6JC",
+      "public_key": "ED322C105684EB57E4FC65EBD5D7CEBA93DFBEC01B9A6ED3483294EDE0C9ADA935",
+      "private_key": "ED5F5580E10DA8CC676B1885CB028AC026848764F5F743B157F9B78D21288CFFA1",
+      "classic_address": "rBAPQgHby58iHFtJXQTm6GMvMygtnuKt64",
+      "sequence": 21335591
+    }
+  },
+  {
+    "type": "retailer",
+    "wallet": {
+      "seed": "sEdSt3apGzQLKGB4gQtK3wZgzD3aSbu",
+      "public_key": "ED626013207AC93F817E7A44CDD8355F374D9A530665BDCBEBB94253BBF6C72C8D",
+      "private_key": "EDF339ED9C6D9C5F2CF080A595F2ED3399625F19FF323C3B434041806516CC7801",
+      "classic_address": "rNv3x6fi7NAULoNPFvbrmo2fLU4D8Lscwc",
+      "sequence": 21335594
+    }
+  }
+]

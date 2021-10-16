@@ -1,47 +1,613 @@
-<html>
-  <head>
-    <link rel="stylesheet" href="{{ url_for('static', filename="css/index.css") }}">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
-    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script> -->
+<!DOCTYPE html>
+<html lang="en">
 
-  </head>
-  <body>
-    <div class="landing">
-      <h1 class="h1" id="land-title">LogiChain</h1>
-      <p class="lead" id="land-lead" style="color: aliceblue;">
-        The key to unlock efficiency in your logistics chain.
-      </p>
-      <div id="land-form-cont" >
-        <form class="form-signin" method="post">      
-          <h1 class="h3" id="login">Login</h1>
-          <input type="text" name="type" style="display: none;" value="signin"/>
-          <input type="text" class="form-control" name="username" placeholder="Username" required="" autofocus="" />
-          <input type="password" class="form-control" name="password" placeholder="Password" required=""/>      
- 
-          <button class="btn btn-lg btn-primary btn-block login-submit" id="land-form-submit" type="submit">Login</button> </br> 
-          <button type="button" class="btn btn-outline-primary login-register" id="land-form-submit">Dont Have An Account?</button>
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-        </form>
-        <form class="form-register" method="post"> 
+  <title>LogiChain</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
 
-          <h1 class="h3" id="login">Register</h1>
-          <input type="text" name="type" style="display: none;" value="register"/>
-          <input type="text" class="form-control" name="username" placeholder="Username" required="" autofocus="" />
-          <input type="password" class="form-control" name="password" placeholder="Password" required=""/>      
- 
-          <button class="btn btn-lg btn-primary btn-block register-submit" id="land-form-submit" type="submit">Register</button> </br> 
-          <button type="button" class="btn btn-outline-primary register-login" id="land-form-submit">Already Have An Account?</button>
+  <!-- Favicons -->
+  <link href="{{ url_for('static', filename="img/logobyte.png") }}" rel="icon">
+  <link href="{{ url_for('static', filename="img/logobyte.png") }}" rel="apple-touch-icon">
 
-        </form>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Jost:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="{{ url_for('static', filename="vendor/aos/aos.css") }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename="vendor/bootstrap/css/bootstrap.min.css") }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename="vendor/bootstrap-icons/bootstrap-icons.css") }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename="vendor/boxicons/css/boxicons.min.css") }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename="vendor/glightbox/css/glightbox.min.css") }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename="vendor/remixicon/remixicon.css") }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename="vendor/swiper/swiper-bundle.min.css") }}" rel="stylesheet">
+
+  <!-- Template Main CSS File -->
+  <link href="{{ url_for('static', filename="css/style.css") }}" rel="stylesheet">
+
+  <!-- =======================================================
+  * Template Name: Arsha - v4.4.0
+  * Template URL: https://bootstrapmade.com/arsha-free-bootstrap-html-template-corporate/
+  * Author: BootstrapMade.com
+  * License: https://bootstrapmade.com/license/
+  ======================================================== -->
+</head>
+
+<body>
+
+  <!-- ======= Header ======= -->
+  <header id="header" class="fixed-top ">
+    <div class="container d-flex align-items-center">
+
+      <h1 class="logo me-auto"><a href="index.html">LogiChain</a></h1>
+      <!-- Uncomment below if you prefer to use an image logo -->
+      <!-- <a href="index.html" class="logo me-auto"><img src="assets/img/logo.png" alt="" class="img-fluid"></a>-->
+
+      <nav id="navbar" class="navbar">
+        <ul>
+          <li><a class="nav-link scrollto active" href="#hero">Home</a></li>
+          <li><a class="nav-link scrollto" href="#about">About</a></li>
+          <li><a class="nav-link scrollto" href="#services">Features</a></li>
+          <!-- <li><a class="nav-link   scrollto" href="#portfolio">Portfolio</a></li> -->
+          <li><a class="nav-link scrollto" href="#why-us">Why Us?</a></li>
+          <li><a class="nav-link scrollto" href="#pricing">Pricing</a></li>
+          <li><a class="nav-link scrollto" href="#faq">FAQ</a></li>
+
+
+          <!-- <li class="dropdown"><a href="#"><span>Drop Down</span> <i class="bi bi-chevron-down"></i></a>
+            <ul>
+              <li><a href="#">Drop Down 1</a></li>
+              <li class="dropdown"><a href="#"><span>Deep Drop Down</span> <i class="bi bi-chevron-right"></i></a>
+                <ul>
+                  <li><a href="#">Deep Drop Down 1</a></li>
+                  <li><a href="#">Deep Drop Down 2</a></li>
+                  <li><a href="#">Deep Drop Down 3</a></li>
+                  <li><a href="#">Deep Drop Down 4</a></li>
+                  <li><a href="#">Deep Drop Down 5</a></li>
+                </ul>
+              </li>
+              <li><a href="#">Drop Down 2</a></li>
+              <li><a href="#">Drop Down 3</a></li>
+              <li><a href="#">Drop Down 4</a></li>
+            </ul>
+          </li> -->
+          <li><a class="nav-link scrollto" href="#contact">Contact</a></li>
+          <li><a class="getstarted scrollto" href="signin">Get Started</a></li>
+        </ul>
+        <i class="bi bi-list mobile-nav-toggle"></i>
+      </nav><!-- .navbar -->
+
+    </div>
+  </header><!-- End Header -->
+
+  <!-- ======= Hero Section ======= -->
+  <section id="hero" class="d-flex align-items-center">
+
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-6 d-flex flex-column justify-content-center pt-4 pt-lg-0 order-2 order-lg-1" data-aos="fade-up" data-aos-delay="200">
+          <h1>Trusted and Transparent Efficiency</h1>
+          <h2>LogiChain will release your supply chain's potential for efficiency, and build public trust while we're at it!</h2>
+          <div class="d-flex justify-content-center justify-content-lg-start">
+            <a href="#about" class="btn-get-started scrollto">Get Started</a>
+            <a href="https://www.youtube.com/watch?v=jDDaplaOz7Q" class="glightbox btn-watch-video"><i class="bi bi-play-circle"></i><span>Watch Video</span></a>
+          </div>
+        </div>
+        <div class="col-lg-6 order-1 order-lg-2 hero-img" data-aos="zoom-in" data-aos-delay="200">
+          <img src="{{ url_for('static', filename='img/hero-img.png') }}" class="img-fluid animated" alt="">
+        </div>
       </div>
     </div>
-    <div id="particles-js">
+
+  </section><!-- End Hero -->
+
+  <main id="main">
+
+    <!-- ======= Clients Section ======= -->
+    <section id="cliens" class="cliens section-bg">
+      <div class="container">
+        <h1 class="h4" style="margin-top: 15px;">Similar Logistics Blockchains</h1>
+        <div class="row" data-aos="zoom-in">
+
+          <div class="col-lg-2 col-md-4 col-6 d-flex align-items-center justify-content-center">
+            <a target="_blank" href="https://www.ibm.com/au-en/blockchain/solutions/food-trust"><img src="{{ url_for('static', filename="img/clients/ibm.png") }}" class="img-fluid" alt=""></a>
+          </div>
+
+          <div class="col-lg-2 col-md-4 col-6 d-flex align-items-center justify-content-center">
+            <a target="_blank" href="https://wabi.io/"><img src="{{ url_for('static', filename="img/clients/wabi.png") }}" class="img-fluid" alt=""></a>
+          </div>
+
+          <div class="col-lg-2 col-md-4 col-6 d-flex align-items-center justify-content-center">
+            <a target="_blank" href="https://sweetbridge.com/"><img src="{{ url_for('static', filename="img/clients/sweetbridge.png") }}" class="img-fluid" alt=""></a>
+          </div>
+
+          <div class="col-lg-2 col-md-4 col-6 d-flex align-items-center justify-content-center">
+            <a target="_blank" href="https://matrak.com/"><img src="{{ url_for('static', filename="img/clients/Matrak.png") }}" class="img-fluid" alt=""></a>
+          </div>
+
+          <div class="col-lg-2 col-md-4 col-6 d-flex align-items-center justify-content-center">
+            <a target="_blank" href="https://www.modum.io/"><img src="{{ url_for('static', filename="img/clients/modum.png") }}" class="img-fluid" alt=""></a>
+          </div>
+
+          <div class="col-lg-2 col-md-4 col-6 d-flex align-items-center justify-content-center">
+            <a target="_blank" href="https://www.waltonchain.org/#/en"><img src="{{ url_for('static', filename="img/clients/walton.png") }}" class="img-fluid" alt=""></a>
+          </div>
+
+        </div>
+
+      </div>
+    </section><!-- End Cliens Section -->
+
+    <!-- ======= About Us Section ======= -->
+    <section id="about" class="about">
+      <div class="container" data-aos="fade-up">
+
+        <div class="section-title">
+          <h2>About Us</h2>
+        </div>
+
+        <div class="row content">
+          <div class="col-lg-6">
+            LogiChain is built upon the <a href="https://ripple.com/xrp/">XRP</a> blockchain network, we use XRP to facilitate quick, 
+            transparent, and effective payments between supply chain networks. LogiChain uses XRP’s blockchain to store data
+             about the movement of products through the supply chain, meaning a product can be traced back to its source in a matter of seconds
+            
+          </div>
+          <div class="col-lg-6 pt-4 pt-lg-0">
+            <p>
+              This transparency of product production means that customers are naturally inclined to trust the product more than others, simply 
+              because finding the source of the product can be as simple as scanning a QR code; this way there is no questioning the product’s authenticity.
+              On the topic of trust, LogiChain promotes the use of integrity verification through the supply chain so that a customer 
+              knows that whatever it is they’re purchasing, it's safe for them to use.
+            
+            </p>
+            <a href="https://thecryptocurrencyforums.com/wabi-supply-chain-ethereum-token/" class="btn-learn-more">Learn More About Product-Tracking QR Codes</a>
+          </div>
+        </div>
+
+      </div>
+    </section><!-- End About Us Section -->
+
+    <!-- ======= Services Section ======= -->
+    <section id="services" class="services section-bg">
+      <div class="container" data-aos="fade-up">
+
+        <div class="section-title">
+          <h2>Features</h2>
+          <p>Here are some of the outstanding advantages of using LogiChain for your supply chain logistics.</p>
+        </div>
+
+        <div class="row">
+          <div class="col-xl-3 col-md-6 d-flex align-items-stretch" data-aos="zoom-in" data-aos-delay="100">
+            <div class="icon-box">
+              <div class="icon"><i class="bx bxl-dribbble"></i></div>
+              <h4><a href="">Ease of use</a></h4>
+              <p>Allow LogiChain’s simple and universal interface to save you time and effort.</p>
+            </div>
+          </div>
+
+          <div class="col-xl-3 col-md-6 d-flex align-items-stretch mt-4 mt-md-0" data-aos="zoom-in" data-aos-delay="200">
+            <div class="icon-box">
+              <div class="icon"><i class="bx bx-file"></i></div>
+              <h4><a href="">Smart Contracts</a></h4>
+              <p>Automate menial, yet essential tasks on your supply chain.</p>
+            </div>
+          </div>
+
+          <div class="col-xl-3 col-md-6 d-flex align-items-stretch mt-4 mt-xl-0" data-aos="zoom-in" data-aos-delay="300">
+            <div class="icon-box">
+              <div class="icon"><i class="bx bx-tachometer"></i></div>
+              <h4><a href="">Increased Efficiency</a></h4>
+              <p>LogiChain’s use of blockchain will be the key to unlock efficiency in your supply chain.</p>
+            </div>
+          </div>
+
+          <div class="col-xl-3 col-md-6 d-flex align-items-stretch mt-4 mt-xl-0" data-aos="zoom-in" data-aos-delay="400">
+            <div class="icon-box">
+              <div class="icon"><i class="bx bx-layer"></i></div>
+              <h4><a href="">Safety</a></h4>
+              <p>Blockchain will ensure the safety of your supply chain’s data through its innate immutability.</p>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section><!-- End Services Section -->
+    
+
+    <!-- ======= Why Us Section ======= -->
+    <section id="why-us" class="why-us section-bg">
+      <div class="container-fluid" data-aos="fade-up">
+
+        <div class="row">
+
+          <div class="col-lg-7 d-flex flex-column justify-content-center align-items-stretch  order-2 order-lg-1">
+
+            <div class="content">
+              <h3>But, <strong>Why Us?</strong></h3>
+              <p>
+                You've heard about some features of LogiChain, but lets drill down into some more detailed points about why you should choose LogiChain to manage your logistics.
+              </p>
+            </div>
+
+            <div class="accordion-list">
+              <ul>
+                <li>
+                  <a data-bs-toggle="collapse" class="collapse" data-bs-target="#accordion-list-1"><span>01</span> Blockchain-Powered Efficiency <i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
+                  <div id="accordion-list-1" class="collapse show" data-bs-parent=".accordion-list">
+                    <p>
+                      Since a blockchain is always available to all members of the supply chain, time will never be wasted querying companies for past data who would then need to dig through records to find information. 
+                      <br><br>
+                      Blockchain allows for <strong>smart contracts</strong> which allows automation of payments and notifies members of the members of the supply chain.
+                      <br><br>
+                      Since all data stored on the blockchain is in a universal format so users of LogiChain can always easily digest necessary information.
+                    </p>
+                  </div>
+                </li>
+
+                <li>
+                  <a data-bs-toggle="collapse" data-bs-target="#accordion-list-3" class="collapsed"><span>02</span> Data Safety <i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
+                  <div id="accordion-list-3" class="collapse" data-bs-parent=".accordion-list">
+                    <p>
+                      Data stored on the blockchain is safe from data loss; a blockchain is, in essence, a distributed ledger. So if one member of the supply chain deletes all of its data, all information will continue to be safe with other members.
+                      <br><br>
+                      Any data put onto the blockchain cannot be modified, so if someone were to try modify XRP’s blockchain data, they would need more computing power than the entire XRP network, which is not feasible.
+                    </p>
+                  </div>
+                </li>
+
+                <li>
+                  <a data-bs-toggle="collapse" data-bs-target="#accordion-list-2" class="collapsed"><span>03</span> Variable Transparency <i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
+                  <div id="accordion-list-2" class="collapse" data-bs-parent=".accordion-list">
+                    <p>
+                      Since LogiChain can operate on private XRP networks containing only the supply chain’s network of members, the movements of the supply chain don't have to be open to the public. However, customers can always track single products through the supply chain regardless of whether or not all operations are public.
+                    </p>
+                  </div>
+                </li>
+              </ul>
+            </div>
+
+          </div>
+
+          <div class="col-lg-5 align-items-stretch order-1 order-lg-2 img" style='background-image: url("{{ url_for('static', filename="img/why-us.png") }}");' data-aos="zoom-in" data-aos-delay="150">&nbsp;</div>
+        </div>
+
+      </div>
+    </section><!-- End Why Us Section -->
+
+    <!-- ======= Skills Section ======= -->
+    <!-- <section id="skills" class="skills">
+      <div class="container" data-aos="fade-up">
+
+        <div class="row">
+          <div class="col-lg-6 d-flex align-items-center" data-aos="fade-right" data-aos-delay="100">
+            <img src="assets/img/skills.png" class="img-fluid" alt="">
+          </div>
+          <div class="col-lg-6 pt-4 pt-lg-0 content" data-aos="fade-left" data-aos-delay="100">
+            <h3>Voluptatem dignissimos provident quasi corporis voluptates</h3>
+            <p class="fst-italic">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
+              magna aliqua.
+            </p>
+
+            <div class="skills-content">
+
+              <div class="progress">
+                <span class="skill">HTML <i class="val">100%</i></span>
+                <div class="progress-bar-wrap">
+                  <div class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+              </div>
+
+              <div class="progress">
+                <span class="skill">CSS <i class="val">90%</i></span>
+                <div class="progress-bar-wrap">
+                  <div class="progress-bar" role="progressbar" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+              </div>
+
+              <div class="progress">
+                <span class="skill">JavaScript <i class="val">75%</i></span>
+                <div class="progress-bar-wrap">
+                  <div class="progress-bar" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+              </div>
+
+              <div class="progress">
+                <span class="skill">Photoshop <i class="val">55%</i></span>
+                <div class="progress-bar-wrap">
+                  <div class="progress-bar" role="progressbar" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </section>End Skills Section -->
+
+
+    <!-- ======= Pricing Section ======= -->
+    <section id="pricing" class="pricing">
+      <div class="container" data-aos="fade-up">
+
+        <div class="section-title">
+          <h2>Pricing</h2>
+          <p>
+            Interested in upgrading your supply chain logistics? Look for a plan which best suits you and set up your companies own LogiDesk.
+          </p>
+        </div>
+
+        <div class="row">
+
+          <div class="col-lg-4" data-aos="fade-up" data-aos-delay="100">
+            <div class="box">
+              <h3>Free Plan</h3>
+              <h4><sup>$</sup>0<span>per month</span></h4>
+              <ul>
+                <li><i class="bx bx-check"></i> Logistics advice and consulting</li>
+                <li><i class="bx bx-check"></i> Free LogiDesk demo of 'baby formula' supply chain</li>
+                <li><i class="bx bx-check"></i> Interaction with demo LogiDesk</li>
+                <li class="na"><i class="bx bx-x"></i> <span>A LogiDesk for your supply chain</span></li>
+                <li class="na"><i class="bx bx-x"></i> <span>Private XRP server for your LogiDesk</span></li>
+              </ul>
+              <a href="signup" class="buy-btn">Get Started</a>
+            </div>
+          </div>
+
+          <div class="col-lg-4 mt-4 mt-lg-0" data-aos="fade-up" data-aos-delay="200">
+            <div class="box featured">
+              <h3>Business Plan</h3>
+              <h4><sup>$</sup>29<span>per month</span></h4>
+              <ul>
+                <li><i class="bx bx-check"></i> Logistics advice and consulting</li>
+                <li><i class="bx bx-check"></i> Free LogiDesk demo of 'baby formula' supply chain</li>
+                <li><i class="bx bx-check"></i> Interaction with demo LogiDesk</li>
+                <li><i class="bx bx-check"></i> <span>A LogiDesk for your supply chain</span></li>
+                <li class="na"><i class="bx bx-x"></i> <span>Private XRP server for your LogiDesk</span></li>
+              </ul>
+              <a href="signup" class="buy-btn">Get Started</a>
+            </div>
+          </div>
+
+          <div class="col-lg-4 mt-4 mt-lg-0" data-aos="fade-up" data-aos-delay="300">
+            <div class="box">
+              <h3>Titan Plan</h3>
+              <h4><sup>$</sup>49<span>per month</span></h4>
+              <ul>
+                <li><i class="bx bx-check"></i> Logistics advice and consulting</li>
+                <li><i class="bx bx-check"></i> Free LogiDesk demo of 'baby formula' supply chain</li>
+                <li><i class="bx bx-check"></i> Interaction with demo LogiDesk</li>
+                <li><i class="bx bx-check"></i> <span>A LogiDesk for your supply chain</span></li>
+                <li><i class="bx bx-check"></i> <span>Private XRP server for your LogiDesk</span></li>
+              </ul>
+              <a href="signup" class="buy-btn">Get Started</a>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section><!-- End Pricing Section -->
+
+    <!-- ======= Frequently Asked Questions Section ======= -->
+    <section id="faq" class="faq section-bg">
+      <div class="container" data-aos="fade-up">
+
+        <div class="section-title">
+          <h2>Frequently Asked Questions</h2>
+          <p>
+            
+          </p>
+        </div>
+
+        <div class="faq-list">
+          <ul>
+            <li data-aos="fade-up" data-aos-delay="100">
+              <i class="bx bx-help-circle icon-help"></i> <a data-bs-toggle="collapse" class="collapse" data-bs-target="#faq-list-1">Is my companies data really safe on the blockchain? <i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
+              <div id="faq-list-1" class="collapse show" data-bs-parent=".faq-list">
+                <p>
+                  Yes, a companies data is never truly revealed through a blockchain transaction or smart contract, the only data revealed is the amount being transacted.
+                </p>
+              </div>
+            </li>
+
+            <li data-aos="fade-up" data-aos-delay="200">
+              <i class="bx bx-help-circle icon-help"></i> <a data-bs-toggle="collapse" data-bs-target="#faq-list-2" class="collapsed">What does my company get from working with LogiChain? <i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
+              <div id="faq-list-2" class="collapse" data-bs-parent=".faq-list">
+                <p>
+                  LogiChain will provide your business with secure payment and data storage, efficient day to day operations, and more with its LogiDesk application, the platform your supply chain will be using to do all of this. 
+                  <br><br>
+                  LogiChain also offers professional logistics consultancy along with technical support.
+                </p>
+              </div>
+            </li>
+<!-- 
+            <li data-aos="fade-up" data-aos-delay="300">
+              <i class="bx bx-help-circle icon-help"></i> <a data-bs-toggle="collapse" data-bs-target="#faq-list-3" class="collapsed">Dolor sit amet consectetur adipiscing elit? <i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
+              <div id="faq-list-3" class="collapse" data-bs-parent=".faq-list">
+                <p>
+                  Eleifend mi in nulla posuere sollicitudin aliquam ultrices sagittis orci. Faucibus pulvinar elementum integer enim. Sem nulla pharetra diam sit amet nisl suscipit. Rutrum tellus pellentesque eu tincidunt. Lectus urna duis convallis convallis tellus. Urna molestie at elementum eu facilisis sed odio morbi quis
+                </p>
+              </div>
+            </li>
+
+            <li data-aos="fade-up" data-aos-delay="400">
+              <i class="bx bx-help-circle icon-help"></i> <a data-bs-toggle="collapse" data-bs-target="#faq-list-4" class="collapsed">Tempus quam pellentesque nec nam aliquam sem et tortor consequat? <i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
+              <div id="faq-list-4" class="collapse" data-bs-parent=".faq-list">
+                <p>
+                  Molestie a iaculis at erat pellentesque adipiscing commodo. Dignissim suspendisse in est ante in. Nunc vel risus commodo viverra maecenas accumsan. Sit amet nisl suscipit adipiscing bibendum est. Purus gravida quis blandit turpis cursus in.
+                </p>
+              </div>
+            </li>
+
+            <li data-aos="fade-up" data-aos-delay="500">
+              <i class="bx bx-help-circle icon-help"></i> <a data-bs-toggle="collapse" data-bs-target="#faq-list-5" class="collapsed">Tortor vitae purus faucibus ornare. Varius vel pharetra vel turpis nunc eget lorem dolor? <i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
+              <div id="faq-list-5" class="collapse" data-bs-parent=".faq-list">
+                <p>
+                  Laoreet sit amet cursus sit amet dictum sit amet justo. Mauris vitae ultricies leo integer malesuada nunc vel. Tincidunt eget nullam non nisi est sit amet. Turpis nunc eget lorem dolor sed. Ut venenatis tellus in metus vulputate eu scelerisque.
+                </p>
+              </div>
+            </li> -->
+
+          </ul>
+        </div>
+
+      </div>
+    </section><!-- End Frequently Asked Questions Section -->
+
+    <!-- ======= Contact Section ======= -->
+    <section id="contact" class="contact">
+      <div class="container" data-aos="fade-up">
+
+        <div class="section-title">
+          <h2>Contact</h2>
+          <p>Magnam dolores commodi suscipit. Necessitatibus eius consequatur ex aliquid fuga eum quidem. Sit sint consectetur velit. Quisquam quos quisquam cupiditate. Et nemo qui impedit suscipit alias ea. Quia fugiat sit in iste officiis commodi quidem hic quas.</p>
+        </div>
+
+        <div class="row">
+
+          <div class="col-lg-5 d-flex align-items-stretch">
+            <div class="info">
+              <div class="address">
+                <i class="bi bi-geo-alt"></i>
+                <h4>Location:</h4>
+                <p>A108 Adam Street, New York, NY 535022</p>
+              </div>
+
+              <div class="email">
+                <i class="bi bi-envelope"></i>
+                <h4>Email:</h4>
+                <p>logichain.info@gmail.com</p>
+              </div>
+
+              <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d12097.433213460943!2d-74.0062269!3d40.7101282!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0xb89d1fe6bc499443!2sDowntown+Conference+Center!5e0!3m2!1smk!2sbg!4v1539943755621" frameborder="0" style="border:0; width: 100%; height: 290px;" allowfullscreen></iframe>
+            </div>
+
+          </div>
+
+          <div class="col-lg-7 mt-5 mt-lg-0 d-flex align-items-stretch">
+            <form action="mailto:logichain.info@gmail.com" method="post" enctype="multipart/form-data" role="form" class="php-email-form" name=”EmailForm”>
+              <div class="row">
+                <div class="form-group col-md-6">
+                  <label for="name">Your Name</label>
+                  <input type="text" name="name" class="form-control" id="name" required>
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="name">Your Email</label>
+                  <input type="email" class="form-control" name="email" id="email" required>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="name">Subject</label>
+                <input type="text" class="form-control" name="subject" id="subject" required>
+              </div>
+              <div class="form-group">
+                <label for="name">Message</label>
+                <textarea class="form-control" name="message" rows="10" required></textarea>
+              </div>
+              <div class="my-3">
+                <div class="loading">Loading</div>
+                <div class="error-message"></div>
+                <div class="sent-message">Your message has been sent. Thank you!</div>
+              </div>
+              <div class="text-center"><button type="submit">Send Message</button></div>
+            </form>
+          </div>
+
+        </div>
+
+      </div>
+    </section><!-- End Contact Section -->
+
+  </main><!-- End #main -->
+
+  <!-- ======= Footer ======= -->
+  <footer id="footer">
+
+    <div class="footer-top">
+      <div class="container">
+        <div class="row">
+
+          <div class="col-lg-3 col-md-6 footer-contact">
+            <h3>LogiChain</h3>
+            <p>
+              A108 Adam Street <br>
+              New York, NY 535022<br>
+              United States <br><br>
+              <strong>Email:</strong> logichain.info@gmail.com<br>
+            </p>
+          </div>
+
+          <div class="col-lg-3 col-md-6 footer-links">
+            <h4>Useful Links</h4>
+            <ul>
+              <li><i class="bx bx-chevron-right"></i> <a href="#">Home</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="#about">About Us</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="#services">Features</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="#why-us">Why Us</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="#faq">FAQ</a></li>
+            </ul>
+          </div>
+
+          <div class="col-lg-3 col-md-6 footer-links">
+            <h4>Our Services</h4>
+            <ul>
+              <li><i class="bx bx-chevron-right"></i> <a href="#">Web Design</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="#">Web Development</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="#">Product Management</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="#">Marketing</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="#">Graphic Design</a></li>
+            </ul>
+          </div>
+
+          <div class="col-lg-3 col-md-6 footer-links">
+            <h4>My Social Networks</h4>
+            <div class="social-links mt-3">
+              <a href="https://github.com/jamie-humble" class="twitter"><i class="bx bxl-github"></i></a>
+              <a href="https://www.linkedin.com/in/jamie-humble-a42a921b8/" class="linkedin"><i class="bx bxl-linkedin"></i></a>
+            </div>
+          </div>
+
+        </div>
+      </div>
     </div>
 
-  </body>
-  <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
-  <script src="{{ url_for('static', filename="js/particles.js") }}"></script>
-  <!-- <script src="http://vincentgarreau.com/particles.js/particles.js"></script> -->
-  <script src="{{ url_for('static', filename="js/app.js") }}"></script>
+    <div class="container footer-bottom clearfix">
+      <div class="copyright">
+        &copy; Copyright <strong><span>Arsha</span></strong>. All Rights Reserved
+      </div>
+      <div class="credits">
+        <!-- All the links in the footer should remain intact. -->
+        <!-- You can delete the links only if you purchased the pro version. -->
+        <!-- Licensing information: https://bootstrapmade.com/license/ -->
+        <!-- Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/arsha-free-bootstrap-html-template-corporate/ -->
+        Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
+      </div>
+    </div>
+  </footer><!-- End Footer -->
+
+  <div id="preloader"></div>
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <!-- Vendor JS Files -->
+  <script src="{{ url_for('static', filename="vendor/aos/aos.js") }}"></script>
+  <script src="{{ url_for('static', filename="vendor/bootstrap/js/bootstrap.bundle.min.js") }}"></script>
+  <script src="{{ url_for('static', filename="vendor/glightbox/js/glightbox.min.js") }}"></script>
+  <script src="{{ url_for('static', filename="vendor/isotope-layout/isotope.pkgd.min.js") }}"></script>
+  <script src="{{ url_for('static', filename="vendor/php-email-form/validate.js") }}"></script>
+  <script src="{{ url_for('static', filename="vendor/swiper/swiper-bundle.min.js") }}"></script>
+  <script src="{{ url_for('static', filename="vendor/waypoints/noframework.waypoints.js") }}"></script>
+
+  <!-- Template Main JS File -->
+  <script src="{{ url_for('static', filename="js/main.js") }}"></script>
+
+</body>
 
 </html>
