@@ -14,7 +14,7 @@ import os
 import math
 import time
 from itertools import count
-from json_handling import json_append, event_cleared_repair
+from json_handling import json_append
 from users import construct_node_wallets
 from constants import *
 
@@ -29,7 +29,6 @@ class SupplyChain:
     #node_types more or less controlls the basic logic of the node interaction, for example when a contract is made by the n'th node, it is simply sent to the n+1'th node 
     # Node status monitors which users are currently apart of each nodetype based off JSON data
     self.node_stat = {x:[] for x in NODETYPES}
-    event_cleared_repair()
     print(construct_node_wallets())
 
   # simply finds the next node in the supply chain 
@@ -229,9 +228,9 @@ class Event:
           self.ERROR[1] = self.create_escrow()
           print("Event() escaped", self.ERROR)
         else:
-          json_append('EVENT_FILE',self.__dict__)
+          json_append('event',self.__dict__)
     else:
-      json_append('EVENT_FILE',self.__dict__)
+      json_append('event',self.__dict__)
 
   # This function is used to create a JSON reprisentation of a smart contract, since XRPL will not let us create an actuall
   # escrow, when this 'contract' is filfilled we will send an XRPL transaction.

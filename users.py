@@ -23,7 +23,7 @@ class User:
     self.email = email
     self.phone = phone
     # a user should always have a unique username
-    json_append(USER_FILE, self.__dict__)
+    json_append("user", self.__dict__)
 
 # import os
 # # there should be an admin node always in the None type

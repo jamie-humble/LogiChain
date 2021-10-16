@@ -10,10 +10,11 @@ import hashlib
 from xrpl.clients import WebsocketClient
 from xrpl.account import get_balance
 from constants import *
+from json_handling import *
 
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
-app.config.update(
+app.config.update( 
     SECRET_KEY=b'\xe8\x87\xb7\xa3\x8c\xd6;AJOEH\x90\xf2\x11\x99'
     # SECRET_KEY = os.urandom(16)
 )
@@ -33,19 +34,9 @@ def signup():
 @app.route("/postsignup", methods=['POST'])
 def post_signup():
     data = request.get_json()
-    # if username already exists, error
-    try:
-        with open(USER_FILE) as a:
-            json_array = json.load(a)
-    except FileNotFoundError:
-        return "ERROR: Database not found"
     
-    try:
-        for x in json_array:
-            if x["username"] == data["username"]:
-                return "ERROR: Username already exists"
-    except KeyError:
-        return "ERROR: KeyError in database lookup"
+    if get_user(data["username"]) != False:
+        return "ERROR: Username already exists"
 
     # I would have liked to make these try catches nested, but it would not stop spitting type errors at me,
     # so this pass to a non-nested try does the trick, its just a little ugly.
@@ -70,14 +61,9 @@ def post_signup():
 def post_signin():
     data = request.get_json()
     # find user and sign in
-    with open(USER_FILE) as a:
-        json_array = json.load(a)
-    for user in json_array:
-        if user["username"] == data["username"]:
-            if user["password"] == hashlib.sha256(data["password"].encode()).hexdigest():
-                session["username"] = data["username"]
-                return {"msg":"User is signed in", "redirect": True, "redirect_url":"/LogiDesk"}
-
+    if login(data["username"],data["password"]):
+        session["username"] = data["username"]
+        return {"msg":"User has been signed in", "redirect": True, "redirect_url":"/LogiDesk"}
     return "ERROR: Incorrect username or password"
 
 @app.route("/LogiDesk")
