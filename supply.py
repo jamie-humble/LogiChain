@@ -17,9 +17,8 @@ from itertools import count
 from json_handling import json_append
 from users import construct_node_wallets
 from constants import *
+from products import product_update
 
-
-NODETYPES = ["delivery", "supplier", "manufacturer", "vendor", "retailer"]
 
 # the supplyChain class controls almost all methods to do with users, escrows and the supply chain, this is because the Event class is never actually stored by the server.
 # the fact that most webapp data is stored on the JSON files and that supply_chain is the only global variable stored across modules means that this class must be capable of handling
@@ -28,24 +27,25 @@ class SupplyChain:
   def __init__(self):
     #node_types more or less controlls the basic logic of the node interaction, for example when a contract is made by the n'th node, it is simply sent to the n+1'th node 
     # Node status monitors which users are currently apart of each nodetype based off JSON data
-    self.node_stat = {x:[] for x in NODETYPES}
+    self.node_stat = {x:[] for x in NODE_TYPES}
     print(construct_node_wallets())
+    product_update()
 
   # simply finds the next node in the supply chain 
   def next_in_supplychain(self, _input):
     i=0
-    for x in NODETYPES:
+    for x in NODE_TYPES:
       if _input == x:
-        return NODETYPES[i+1]
+        return NODE_TYPES[i+1]
       i+=1
     return "ERROR: next node not found"
 
   # simply finds the previous node in the supply chain 
   def prev_in_supplychain(self, _input):
     i=0
-    for x in NODETYPES:
+    for x in NODE_TYPES:
       if _input == x:
-        return NODETYPES[i-1]
+        return NODE_TYPES[i-1]
       i+=1
     return "ERROR: prev node not found"
 

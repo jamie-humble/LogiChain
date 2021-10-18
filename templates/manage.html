@@ -8,6 +8,8 @@
   <link href="{{ url_for('static', filename="img/logobyte.png") }}" rel="icon">
   <link href="{{ url_for('static', filename="img/logobyte.png") }}" rel="apple-touch-icon">  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="{{ url_for('static', filename="css/manage.css") }}">
@@ -214,11 +216,110 @@
           </div>
         </div>
 
-        <button type="button" style="margin-top:15px;" class="btn btn-primary btn-lg btn-block">
+        <div class="order-customize shadow">
+          <div class="order-customize-cont row" style="padding: 15px;">
+            <div class="col">
+              <h1 class="h1">Create an Order</h1>
+              <h1 class="h5">Would you like to send or receive this order?</h1>
+              <div class="btn" role="group" aria-label="Basic radio toggle button group">
+                <input type="radio" class="btn-check rec-select-me" name="btnradio" id="btnradio1" autocomplete="off" checked>
+                <label class="btn btn-outline-primary" for="btnradio1">Recieve</label>
+              
+                <input type="radio" class="btn-check rec-select-another" name="btnradio" id="btnradio2" autocomplete="off">
+                <label class="btn btn-outline-primary" for="btnradio2">Send</label>            
+              </div>
+              <div class="anothernode">
+                <h1 class="h5">Which node would you like to send to?</h1>
+                <select class="form-select" aria-label="Default select example">
+                  <option selected value="None">Select a Node</option>
+                  <option value="supplier">Supplier</option>
+                  <option value="manufacturer">Manufacturer</option>
+                  <option value="vendor">Vendor</option>
+                  <option value="retailer">Retailer</option>
+                </select>
+              </div>
+              <h1 class="h5">Select some products for your order</h1> 
+              <div class="cart-summ" style="border-radius: 10px; background-color: white; overflow-y: scroll; max-height: 380px;">
+                <div class="row border-top border-bottom">
+                    <div class="row main align-items-center">
+                        <div class="col-2"><img class="img-fluid" src="https://i.imgur.com/1GrakTl.jpg"></div>
+                        <div class="col">
+                            <div class="row text-muted">Shirt</div>
+                            <div class="row">Cotton T-shirt</div>
+                        </div>
+                        <div class="col"> <a href="#">-</a><a href="#" class="border">1</a><a href="#">+</a> </div>
+                        <div class="col">&euro; 44.00 <span class="close">&#10005;</span></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="row main align-items-center">
+                        <div class="col-2"><img class="img-fluid" src="https://i.imgur.com/ba3tvGm.jpg"></div>
+                        <div class="col">
+                            <div class="row text-muted">Shirt</div>
+                            <div class="row">Cotton T-shirt</div>
+                        </div>
+                        <div class="col"> <a href="#">-</a><a href="#" class="border">1</a><a href="#">+</a> </div>
+                        <div class="col">&euro; 44.00 <span class="close">&#10005;</span></div>
+                    </div>
+                </div>
+                <div class="row">
+                  <div class="row main align-items-center">
+                      <div class="col-2"><img class="img-fluid" src="https://i.imgur.com/ba3tvGm.jpg"></div>
+                      <div class="col">
+                          <div class="row text-muted">Shirt</div>
+                          <div class="row">Cotton T-shirt</div>
+                      </div>
+                      <div class="col"> <a href="#">-</a><a href="#" class="border">1</a><a href="#">+</a> </div>
+                      <div class="col">&euro; 44.00 <span class="close">&#10005;</span></div>
+                  </div>
+              </div>
+              <div class="row">
+                <div class="row main align-items-center">
+                    <div class="col-2"><img class="img-fluid" src="https://i.imgur.com/ba3tvGm.jpg"></div>
+                    <div class="col">
+                        <div class="row text-muted">Shirt</div>
+                        <div class="row">Cotton T-shirt</div>
+                    </div>
+                    <div class="col"> <a href="#">-</a><a href="#" class="border">1</a><a href="#">+</a> </div>
+                    <div class="col">&euro; 44.00 <span class="close">&#10005;</span></div>
+                </div>
+            </div>
+            <div class="row">
+              <div class="row main align-items-center">
+                  <div class="col-2"><img class="img-fluid" src="https://i.imgur.com/ba3tvGm.jpg"></div>
+                  <div class="col">
+                      <div class="row text-muted">Shirt</div>
+                      <div class="row">Cotton T-shirt</div>
+                  </div>
+                  <div class="col"> <a href="#">-</a><a href="#" class="border">1</a><a href="#">+</a> </div>
+                  <div class="col">&euro; 44.00 <span class="close">&#10005;</span></div>
+              </div>
+          </div>
+                <div class="row border-top border-bottom">
+                    <div class="row main align-items-center">
+                        <div class="col-2"><img class="img-fluid" src="https://i.imgur.com/pHQ3xT3.jpg"></div>
+                        <div class="col">
+                            <div class="row text-muted">Shirt</div>
+                            <div class="row">Cotton T-shirt</div>
+                        </div>
+                        <div class="col"> <a href="#">-</a><a href="#" class="border">1</a><a href="#">+</a> </div>
+                        <div class="col">&euro; 44.00 <span class="close">&#10005;</span></div>
+                    </div>
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <h1>cc</h1>
+            </div>
+  
+          </div>
+        </div>
+
+
+        <button type="button" style="margin-top:15px;" class="btn btn-primary btn-lg btn-block create-order">
           <span style="font-size: 16px;" class="material-icons">
             add
           </span>
-          
           Create Order
         </button>
 

@@ -34,7 +34,7 @@ def signup():
 @app.route("/postsignup", methods=['POST'])
 def post_signup():
     data = request.get_json()
-    
+
     if get_user(data["username"]) != False:
         return "ERROR: Username already exists"
 
@@ -113,17 +113,18 @@ def manage():
         return flask.render_template("index.html")
     # we will append the current user, so that the webapp can figure out the relative nature of the transaction
     # i.e incoming or outgoing 
-    _data = []
-    with open('EVENT_FILE') as a:
-        json_manage = json.load(a)
-    for x in json_manage:
-        if x["escrow"]["bool"]:
-            # print("Loading contract:"+x["escrow"]["hash"]) # Makes webapp slower 
-            # we are passing _data as the contracts which the user is a signer in or participates in
-            if supply_chain.get_user(session["username"])["node"] == x["escrow"]["signers"]["senders"]:
-                _data.append(["incoming", x])
-            elif supply_chain.get_user(session["username"])["node"] == x["escrow"]["signers"]["recipients"]:
-                _data.append(["outgoing", x])
+    # _data = []
+    # with open('EVENT_FILE') as a:
+    #     json_manage = json.load(a)
+    # for x in json_manage:
+    #     if x["escrow"]["bool"]:
+    #         # print("Loading contract:"+x["escrow"]["hash"]) # Makes webapp slower 
+    #         # we are passing _data as the contracts which the user is a signer in or participates in
+    #         if supply_chain.get_user(session["username"])["node"] == x["escrow"]["signers"]["senders"]:
+    #             _data.append(["incoming", x])
+    #         elif supply_chain.get_user(session["username"])["node"] == x["escrow"]["signers"]["recipients"]:
+    #             _data.append(["outgoing", x])
+    _data = get_all_products()
     return flask.render_template("manage.html", _data = json.dumps(_data))
 
 # either signs or cancels a contract

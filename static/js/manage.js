@@ -124,22 +124,22 @@ class SmartContractDisplay {
 }
 
 (loaded_contracts);
+console.log(loaded_contracts);
 
-
-var contractDisplays = [];
-var i = 0;
-loaded_contracts.forEach( x => {
-  contractDisplays[i] = new SmartContractDisplay(
-    i,
-    x[1]["escrow"]["hash"],
-    x[1]["username"],
-    x[1]["time"],
-    x[1]["escrow"]["amount"],
-    x[1]["node_type"],
-    x[1]["escrow"]["status"],
-    x[0])
-  i++;
-});
+// var contractDisplays = [];
+// var i = 0;
+// loaded_contracts.forEach( x => {
+//   contractDisplays[i] = new SmartContractDisplay(
+//     i,
+//     x[1]["escrow"]["hash"],
+//     x[1]["username"],
+//     x[1]["time"],
+//     x[1]["escrow"]["amount"],
+//     x[1]["node_type"],
+//     x[1]["escrow"]["status"],
+//     x[0])
+//   i++;
+// });
 
 
 
@@ -158,6 +158,7 @@ function sleep(ms) {
 }
 
 $(document).ready(function(){
+  $(".order-info").hide();
 
   $(".info-hide").hide();
   $(".info-incoming").hide();
@@ -251,6 +252,17 @@ $(document).ready(function(){
         alert(err.responseText);
       }
     });
+  });
+
+  $(".anothernode").hide();
+  $(".rec-select-another").click(function() {
+    $(".anothernode").show();
+    $(".cart-summ").css("max-height","250px");
+  });
+  $(".rec-select-me").click(function() {
+    $(".anothernode").hide();
+    $(".cart-summ").css("max-height","380px");
+
   });
 });
 

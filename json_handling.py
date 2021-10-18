@@ -17,6 +17,8 @@ def json_append(type:str, data_in: dict):
     ref_obj = NODE_REF
   elif type == "event":
     ref_obj = EVENT_REF
+  elif type == "product":
+    ref_obj = PRODUCT_REF
 
   try:
     ref_obj.push(data_in)
@@ -44,7 +46,13 @@ def json_append(type:str, data_in: dict):
 #       return ("SUCCESS: data appended to JSON")
 def get_all_users():
   return USER_REF.get()
+
+def get_all_products():
+  return PRODUCT_REF.get()
   
+def get_nodes():
+  return NODE_REF.get()
+
 
 def get_user(username):
   for k,v in get_all_users().items():
@@ -61,4 +69,3 @@ def login(username, password):
       return True
   return False
 
-# print(get_all_users())
