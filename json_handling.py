@@ -45,7 +45,10 @@ def json_append(type:str, data_in: dict):
 #       json.dump(data, file)
 #       return ("SUCCESS: data appended to JSON")
 def get_all_users():
-  return USER_REF.get()
+  get = USER_REF.get()
+  if get == None:
+    return {}
+  return get
 
 def get_all_products():
   return PRODUCT_REF.get()
