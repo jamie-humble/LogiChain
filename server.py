@@ -38,6 +38,14 @@ def post_signup():
     if get_user(data["username"]) != False:
         return "ERROR: Username already exists"
 
+    try:
+        _ = session["users_created"]
+    except:
+        session["users_created"] = 0
+
+    if session["users_created"] >= 20:
+        return "ERROR: You've created too many users"
+
     # I would have liked to make these try catches nested, but it would not stop spitting type errors at me,
     # so this pass to a non-nested try does the trick, its just a little ugly.
     # pass
@@ -52,6 +60,7 @@ def post_signup():
             data["phone"]
         )
         session["username"] = data["username"]
+        session["users_created"] += 1
         return {"msg":"User Successfully created", "redirect": True, "redirect_url":"/LogiDesk"}
     except FileNotFoundError:
         return {"msg":"ERROR: User could not be created", "redirect": False, "redirect_url":""}
