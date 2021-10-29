@@ -28,9 +28,10 @@ $(document).ready(function(){
       return new Alert("warning",'Passwords do not match.',"Try to carefully re-enter your password confirmation.");
     }
 
-    if(/^[a-zA-Z0-9- ]*$/.test(value["username"] + value["password"]) != true) {
+    if(/^[a-zA-Z0-9-]*$/.test(value["username"] + value["password"]) == false) {
       return new Alert("warning","Illegal Characters Detected",'Your username or password contains illegal characters.');
     }
+
 
     $.ajax({
       type: "POST",

@@ -1,14 +1,22 @@
 from json_handling import *
 
 PRODUCTS = [
-  {"name": "Milk", "price":5},
-  {"name": "Protein Powder", "price":20},
-  {"name": "Folic Acid", "price":5},
-  {"name": "Calcium", "price":5},
-  {"name": "Iron Powder", "price":5},
-  {"name": "Salt", "price":5},
-  {"name": "Baby Formula", "price":5}
+  {"name": "Milk", "price":5, "seller":"supplier"},
+  {"name": "Protein Powder", "price":20, "seller":"supplier"},
+  {"name": "Folic Acid", "price":5, "seller":"supplier"},
+  {"name": "Calcium", "price":5, "seller":"supplier"},
+  {"name": "Iron Powder", "price":5, "seller":"supplier"},
+  {"name": "Salt", "price":5, "seller":"supplier"},
+  {"name": "First infant formula", "price":30, "seller":"manufacturer"},
+  {"name": "Goats' milk formula", "price":20, "seller":"manufacturer"},
+  {"name": "Hungrier baby formula", "price":45, "seller":"manufacturer"},
+  {"name": "Comfort formula", "price":35, "seller":"manufacturer"},
+  {"name": "Lactose-free formula", "price":30, "seller":"manufacturer"},
+  {"name": "Soya formula", "price":30, "seller":"manufacturer"}
 ]
+
+markup = 5
+{PRODUCTS.append({"name": "Bulk package "+x["name"], "price":(x["price"]+markup)*30, "seller":"vendor"}) for x in PRODUCTS if x["seller"]=="manufacturer"}
 
 def product_update():
   try:
@@ -22,9 +30,10 @@ def product_update():
   _ = [Product(**x) for x in products_missing]
 
 class Product:
-  def __init__(self, name:str, price:int):
+  def __init__(self, name:str, price:int, seller:str):
     self.name = name
     self.price = price
+    self.seller = seller
 
-    json_append("product",self.__dict__)    
+    json_append(PRODUCT_REF,self.__dict__)    
 

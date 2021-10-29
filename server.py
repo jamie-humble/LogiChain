@@ -11,6 +11,7 @@ from xrpl.clients import WebsocketClient
 from xrpl.account import get_balance
 from constants import *
 from json_handling import *
+from products import PRODUCTS
 
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
@@ -133,8 +134,9 @@ def manage():
     #             _data.append(["incoming", x])
     #         elif supply_chain.get_user(session["username"])["node"] == x["escrow"]["signers"]["recipients"]:
     #             _data.append(["outgoing", x])
-    _data = get_all_products()
-    return flask.render_template("manage.html", _data = json.dumps(_data))
+    session_node = get_user(session["username"])["node"]
+    _data = {"products":get_all_products(), "session_node": session_node, "orders":fetch_nodes_orders(session_node)}
+    return flask.render_template("LogiDesk/manage.html", _data = json.dumps(_data))
 
 # either signs or cancels a contract
 @app.route("/manageescrow", methods=['POST'])
@@ -145,6 +147,24 @@ def manage_escrow():
         return flask.jsonify({"msg":supply_chain.sign(session["username"], data["identifier"]), "redirect": True, "redirect_url":"/dashboard/manage#"})
     elif data["decision"] == "Delete":
         return flask.jsonify({"msg":supply_chain.cancel(session["username"], data["identifier"]), "redirect": True, "redirect_url":"/dashboard/manage#"})
+
+
+@app.route("/order/submission", methods=['POST'])
+def submit_order():
+    data = request.get_json()
+    print(data)
+    participant_data = data[0]
+    if participant_data["chose"] == "receive":
+        order_to = participant_data["node"]
+        order_from = get_prev_node(participant_data["node"])
+    elif participant_data["chose"] == "send":
+        order_from = participant_data["node"]
+        order_to = get_next_node(participant_data["node"])
+    total_price = SHIPPING_COST
+    for x in data[1:]:
+        total_price += sum([y["price"]*int(x["value"]) for y in PRODUCTS if x["name"]==y["name"]])
+    json_append(ORDER_REF,{"order_sender":order_from, "order_recipient":order_to, "amount":total_price, "products":data[1:]})
+    return {"status":"200","msg":"Your order has been submitted to the XRP ledger!"}
 
 
 @app.route("/createescrow", methods=['POST'])

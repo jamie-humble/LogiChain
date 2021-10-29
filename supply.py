@@ -14,6 +14,7 @@ import os
 import math
 import time
 from itertools import count
+# from LogiChain.firebase import EVENT_REF
 from json_handling import json_append
 from users import construct_node_wallets
 from constants import *
@@ -187,7 +188,7 @@ class SupplyChain:
       )
 
       # sign transaction
-      with WebsocketClient("wss://s.altnet.rippletest.net:51233") as client:
+      with WebsocketClient(RPC_URI) as client:
         trans_signed = safe_sign_and_autofill_transaction(trans,_wallet,client)
 
         # submit transaction
@@ -228,9 +229,9 @@ class Event:
           self.ERROR[1] = self.create_escrow()
           print("Event() escaped", self.ERROR)
         else:
-          json_append('event',self.__dict__)
+          json_append(EVENT_REF,self.__dict__)
     else:
-      json_append('event',self.__dict__)
+      json_append(EVENT_REF,self.__dict__)
 
   # This function is used to create a JSON reprisentation of a smart contract, since XRPL will not let us create an actuall
   # escrow, when this 'contract' is filfilled we will send an XRPL transaction.

@@ -21,7 +21,7 @@
   </script> -->
 </head>
 
-<body>
+<body class="alert-container">
   <nav class="navbar navbar-light bg-light p-3">
     <div class="d-flex col-12 col-md-3 col-lg-2 mb-2 mb-lg-0 flex-wrap flex-md-nowrap justify-content-between">
       <a class="navbar-brand" href="#">
@@ -96,18 +96,18 @@
         </div>
       </nav>
 
-      <main class="col-md-9 ml-sm-auto col-lg-10 px-md-4 py-4">
+      <main class="col-md-9 ml-sm-auto col-lg-10 px-md-4 py-4 ">
 
-        <div class="info-hide">
+        <div class="">
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
               <li class="breadcrumb-item"><a href="/dashboard">Dashboard</a></li>
               <li class="breadcrumb-item active" aria-current="page">Contracts</li>
             </ol>
           </nav>
-          <h1 class="h2">Smart Contract Hub</h1>
+          <h1 class="h2">Order Hub</h1>
           <p>
-            Use this page to manage and create smart contracts as a payment method for services on the supply chain.
+            Use this page to manage and create orders, here you can access the supply chain's   services.
           </p>
         </div>
 
@@ -223,95 +223,46 @@
               <h1 class="h5">Would you like to send or receive this order?</h1>
               <div class="btn" role="group" aria-label="Basic radio toggle button group">
                 <input type="radio" class="btn-check rec-select-me" name="btnradio" id="btnradio1" autocomplete="off" checked>
-                <label class="btn btn-outline-primary" for="btnradio1">Recieve</label>
+                <label class="btn btn-outline-primary" for="btnradio1">Receive</label>
               
                 <input type="radio" class="btn-check rec-select-another" name="btnradio" id="btnradio2" autocomplete="off">
                 <label class="btn btn-outline-primary" for="btnradio2">Send</label>            
               </div>
-              <div class="anothernode">
-                <h1 class="h5">Which node would you like to send to?</h1>
-                <select class="form-select" aria-label="Default select example">
-                  <option selected value="None">Select a Node</option>
-                  <option value="supplier">Supplier</option>
-                  <option value="manufacturer">Manufacturer</option>
-                  <option value="vendor">Vendor</option>
-                  <option value="retailer">Retailer</option>
-                </select>
-              </div>
+
               <h1 class="h5">Select some products for your order</h1> 
-              <div class="cart-summ" style="border-radius: 10px; background-color: white; overflow-y: scroll; max-height: 380px;">
-                <div class="row border-top border-bottom">
-                    <div class="row main align-items-center">
-                        <div class="col-2"><img class="img-fluid" src="https://i.imgur.com/1GrakTl.jpg"></div>
-                        <div class="col">
-                            <div class="row text-muted">Shirt</div>
-                            <div class="row">Cotton T-shirt</div>
-                        </div>
-                        <div class="col"> <a href="#">-</a><a href="#" class="border">1</a><a href="#">+</a> </div>
-                        <div class="col">&euro; 44.00 <span class="close">&#10005;</span></div>
-                    </div>
+              <form class="order-creation">
+                <div class="cart-summ" style="border-radius: 10px; background-color: white; overflow-y: scroll; max-height: 380px;">
+                  <div class="receive"></div>
+                  <div class="send"></div>
                 </div>
-                <div class="row">
-                    <div class="row main align-items-center">
-                        <div class="col-2"><img class="img-fluid" src="https://i.imgur.com/ba3tvGm.jpg"></div>
-                        <div class="col">
-                            <div class="row text-muted">Shirt</div>
-                            <div class="row">Cotton T-shirt</div>
-                        </div>
-                        <div class="col"> <a href="#">-</a><a href="#" class="border">1</a><a href="#">+</a> </div>
-                        <div class="col">&euro; 44.00 <span class="close">&#10005;</span></div>
-                    </div>
-                </div>
-                <div class="row">
-                  <div class="row main align-items-center">
-                      <div class="col-2"><img class="img-fluid" src="https://i.imgur.com/ba3tvGm.jpg"></div>
-                      <div class="col">
-                          <div class="row text-muted">Shirt</div>
-                          <div class="row">Cotton T-shirt</div>
-                      </div>
-                      <div class="col"> <a href="#">-</a><a href="#" class="border">1</a><a href="#">+</a> </div>
-                      <div class="col">&euro; 44.00 <span class="close">&#10005;</span></div>
-                  </div>
-              </div>
-              <div class="row">
-                <div class="row main align-items-center">
-                    <div class="col-2"><img class="img-fluid" src="https://i.imgur.com/ba3tvGm.jpg"></div>
-                    <div class="col">
-                        <div class="row text-muted">Shirt</div>
-                        <div class="row">Cotton T-shirt</div>
-                    </div>
-                    <div class="col"> <a href="#">-</a><a href="#" class="border">1</a><a href="#">+</a> </div>
-                    <div class="col">&euro; 44.00 <span class="close">&#10005;</span></div>
-                </div>
-            </div>
-            <div class="row">
-              <div class="row main align-items-center">
-                  <div class="col-2"><img class="img-fluid" src="https://i.imgur.com/ba3tvGm.jpg"></div>
-                  <div class="col">
-                      <div class="row text-muted">Shirt</div>
-                      <div class="row">Cotton T-shirt</div>
-                  </div>
-                  <div class="col"> <a href="#">-</a><a href="#" class="border">1</a><a href="#">+</a> </div>
-                  <div class="col">&euro; 44.00 <span class="close">&#10005;</span></div>
-              </div>
-          </div>
-                <div class="row border-top border-bottom">
-                    <div class="row main align-items-center">
-                        <div class="col-2"><img class="img-fluid" src="https://i.imgur.com/pHQ3xT3.jpg"></div>
-                        <div class="col">
-                            <div class="row text-muted">Shirt</div>
-                            <div class="row">Cotton T-shirt</div>
-                        </div>
-                        <div class="col"> <a href="#">-</a><a href="#" class="border">1</a><a href="#">+</a> </div>
-                        <div class="col">&euro; 44.00 <span class="close">&#10005;</span></div>
-                    </div>
-                </div>
-              </div>
+              </form>
             </div>
             <div class="col">
-              <h1>cc</h1>
+              <h1 class="h3">Sub Total</h1>
+              <p class="lead subtotal">&dollar;0</p>
+              <h1 class="h4">Delivery</h1>
+              <p class="lead">&dollar;45</p>
+              <h1 class="h2">Total</h1>
+              <p class="lead total">&dollar;0</p>
+
+              <button type="button" class="btn btn-info btn-lg btn-block payment-method-select" style="margin-top: 15px; color: white;">Select Payment Method</button>
+              <button type="button" class="btn btn-primary btn-lg btn-block submit-order" style="margin-top: 15px;" disabled aria-details="receive">Submit Order</button>
+              <button type="button" class="btn btn-danger btn-lg btn-block cancel-order" style="margin-top: 50px;" >Cancel</button>
+
             </div>
-  
+          </div>
+
+          <div class="payment-method row">
+            <div class="col">
+              <h1 class="h1" style="margin-left:30px">Choose a payment method for your order!</h1>
+              <div class="cc-selector">
+                <input id="visa" type="radio" name="credit-card" value="visa" />
+                <label class="drinkcard-cc visa" for="visa"></label>
+                <h1 class="h4 text-center">LogiChain Demo Card</h1>
+                <button type="button" class="btn btn-primary btn-lg btn-block continue-payment" style="margin-top: 60px;" disabled>Continue</button>
+
+              </div>
+            </div>
           </div>
         </div>
 
@@ -329,7 +280,7 @@
               <div class="table-title">
                 <div class="row">
                   <div class="col-sm-5">
-                    <h2>Your Smart Contacts</h2>
+                    <h2>Your Orders</h2>
                   </div>
                 </div>
               </div>
@@ -338,14 +289,14 @@
                   <tr>
                     <th>#</th>
                     <th>Sender</th>
-                    <th>Date Created</th>
+                    <th>Recipient</th>
                     <th>Amount</th>
-                    <th>Role</th>
+                    <th>Order Type</th>
                     <th>Status</th>
-                    <th>Action</th>
+                    <th></th>
                   </tr>
                 </thead>
-                <tbody id="smartcontract_append">
+                <tbody class="order_append">
                 </tbody>
               </table>
             </div>
@@ -360,9 +311,10 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
 
 <script>
-  const loaded_contracts = JSON.parse({{ _data | tojson | safe}});
+  const loaded_data = JSON.parse({{ _data | tojson | safe}});
 </script>
-<script src="{{ url_for('static', filename="js/manage.js") }}"></script>
-<script src="{{ url_for('static', filename="js/logout.js") }}"></script>
+<script type="module" src="/static/js/alerts.js"></script>
+<script src="/static/js/manage.js"></script>
+<script src="/static/js/logout.js"></script>
 
 </html>

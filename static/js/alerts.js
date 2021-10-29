@@ -22,7 +22,7 @@ class Alert{
     $(alert_div).addClass("alert alert-dismissible fade show shadow-sm alert-info position-absolute top-0 start-50 translate-middle-x");
     $(alert_div).attr("role", "alert");
     $(alert_div).css("margin", "20px");
-    $(alert_div).css("z-index", "999");
+    $(alert_div).css("z-index", "99999");
 
     switch (this.nature) {
       case "success":
@@ -61,14 +61,12 @@ class Alert{
     });
     // document.body.appendChild(alert_div);
     // $(alert_div).insertAfter("#header");
-    $(".container").prepend(alert_div);
+    $(".alert-container").prepend(alert_div);
     
     $(".alert").click(function(){
       $(".alert").alert('close');
     });
   }
 }
-
-
 
 window.Alert = Alert;
