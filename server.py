@@ -10,7 +10,7 @@ import hashlib
 from xrpl.clients import WebsocketClient
 from xrpl.account import get_balance
 from constants import *
-from json_handling import *
+from fire_handling import *
 from products import PRODUCTS
 
 app = flask.Flask(__name__)
@@ -45,7 +45,7 @@ def post_signup():
         session["users_created"] = 0
 
     if session["users_created"] >= 20:
-        return "ERROR: You've created too many users"
+        return "You've created too many users"
 
     # I would have liked to make these try catches nested, but it would not stop spitting type errors at me,
     # so this pass to a non-nested try does the trick, its just a little ugly.
@@ -62,7 +62,7 @@ def post_signup():
         )
         session["username"] = data["username"]
         session["users_created"] += 1
-        return {"msg":"User Successfully created", "redirect": True, "redirect_url":"/LogiDesk"}
+        return {"msg":"Congrats! You've successfully created a LogiChain account", "redirect": True, "redirect_url":"/LogiDesk"}
     except FileNotFoundError:
         return {"msg":"ERROR: User could not be created", "redirect": False, "redirect_url":""}
 
@@ -73,7 +73,7 @@ def post_signin():
     # find user and sign in
     if login(data["username"],data["password"]):
         session["username"] = data["username"]
-        return {"msg":"User has been signed in", "redirect": True, "redirect_url":"/LogiDesk"}
+        return {"msg":"Congrats! you've signed into LogiChain", "redirect": True, "redirect_url":"/LogiDesk"}
     return "ERROR: Incorrect username or password"
 
 @app.route("/LogiDesk")
@@ -121,38 +121,13 @@ def manage():
         _ = session["username"]
     except:
         return flask.render_template("index.html")
-    # we will append the current user, so that the webapp can figure out the relative nature of the transaction
-    # i.e incoming or outgoing 
-    # _data = []
-    # with open('EVENT_FILE') as a:
-    #     json_manage = json.load(a)
-    # for x in json_manage:
-    #     if x["escrow"]["bool"]:
-    #         # print("Loading contract:"+x["escrow"]["hash"]) # Makes webapp slower 
-    #         # we are passing _data as the contracts which the user is a signer in or participates in
-    #         if supply_chain.get_user(session["username"])["node"] == x["escrow"]["signers"]["senders"]:
-    #             _data.append(["incoming", x])
-    #         elif supply_chain.get_user(session["username"])["node"] == x["escrow"]["signers"]["recipients"]:
-    #             _data.append(["outgoing", x])
     session_node = get_user(session["username"])["node"]
     _data = {"products":get_all_products(), "session_node": session_node, "orders":fetch_nodes_orders(session_node)}
     return flask.render_template("LogiDesk/manage.html", _data = json.dumps(_data))
 
-# either signs or cancels a contract
-@app.route("/manageescrow", methods=['POST'])
-def manage_escrow():
-    data = request.get_json()
-    print(data)
-    if data["decision"] == "Accept":
-        return flask.jsonify({"msg":supply_chain.sign(session["username"], data["identifier"]), "redirect": True, "redirect_url":"/dashboard/manage#"})
-    elif data["decision"] == "Delete":
-        return flask.jsonify({"msg":supply_chain.cancel(session["username"], data["identifier"]), "redirect": True, "redirect_url":"/dashboard/manage#"})
-
-
 @app.route("/order/submission", methods=['POST'])
 def submit_order():
     data = request.get_json()
-    print(data)
     participant_data = data[0]
     if participant_data["chose"] == "receive":
         order_to = participant_data["node"]
@@ -161,42 +136,38 @@ def submit_order():
         order_from = participant_data["node"]
         order_to = get_next_node(participant_data["node"])
     total_price = SHIPPING_COST
+    i=1
     for x in data[1:]:
+        data[i]["price"] = [y["price"] for y in PRODUCTS if x["name"]==y["name"]][0]
         total_price += sum([y["price"]*int(x["value"]) for y in PRODUCTS if x["name"]==y["name"]])
-    json_append(ORDER_REF,{"order_sender":order_from, "order_recipient":order_to, "amount":total_price, "products":data[1:]})
-    return {"status":"200","msg":"Your order has been submitted to the XRP ledger!"}
+        i+=1
+    if participant_data["chose"] == "receive":
+        fire_append(ORDER_REF,{"status":"confirmed" ,"order_sender":order_from, "order_recipient":order_to, "amount":total_price, "products":data[1:]})
+        order_payment(get_node(order_to)["classic_address"],get_node(order_from),total_price)
+        return {"status":"200","msg":"Your order has been created and is already signed!"}
+    else:
+        fire_append(ORDER_REF,{"status":"pending" ,"order_sender":order_from, "order_recipient":order_to, "amount":total_price, "products":data[1:]})
+        return {"status":"200","msg":"Your order has been created and must be signed!"}
 
-
-@app.route("/createescrow", methods=['POST'])
-# this function is built to deal with 2 different requests from the webapp:
-#   - it is able to build contracts to support a user RECEIVING a product order (escrow)
-#   - and its able to build contracts to support a user SENDING a product order (escrow)
-# this functionality allows for a user to interact with both of its adjacent nodes in 
-# the supply chain, just like a real buisness!
-# 
-# Since a supplier is the first node in the supply chain, its "supplies" are given to it
-# by an admin with the node role of None  
-def create_escrow():
-    data = request.get_json()
-    if data == "request":
-        user = session["username"]
-    elif data == "send":
-        # get the first user of the node type which is ahead of our user 
-        try:
-            user = supply_chain.get_users_by_node(
-                supply_chain.next_in_supplychain(
-                    supply_chain.get_user(
-                        session["username"]
-                    )["node"]
-                )
-            )[0]["username"]
-        except:
-            return "ERROR: receiving user could not be established, please make sure there is a user to receive escrow"
-    contract = Event(user,{"bool":True, "amount":50},"escrowCreate")
-    if contract.ERROR[0]:
-        return contract.ERROR[1]
-    return flask.jsonify({"msg":"Smart contract created!", "redirect": True, "redirect_url":"/dashboard/manage#"})
+@app.route("/order/accept", methods=['POST'])
+def accept_order():
+    order_id = request.get_json()["id"]
+    update_order_status(order_id,"accept")
+    order = get_order(order_id)
+    order_recipient = get_node(order["order_recipient"])
+    order_sender = get_node(order["order_sender"])
+    # Now we execute our order transaction
+    order_payment(order_recipient["classic_address"],order_sender,order["amount"])
+    return {"nature":"success","msg_title":"Order Signed","msg":"Your order has been signed and submitted to the XRP ledger!"}
     
+@app.route("/order/decline", methods=['POST'])
+def decline_order():
+    data = request.get_json()
+    update_order_status(data["id"],"decline")
+    return {"nature":"warning","msg_title":"Order Declined", "msg":"You have declined and order, it is now inactive and your funds will be released"}
+
+    
+
 # gets account data of signed in user
 @app.route("/dashboard/account")
 def account():

@@ -199,12 +199,16 @@ table.table .avatar {
 }
 
 .SC-Title{
-  background-color: #bb67b4;
+  background-color: #bb67b4; 
 }
 
 .order-info{
   /* background-color: #e4e4e4; */
-  height: 70%;
+  max-height: 60%;
+}
+
+.order_entry{
+  cursor: pointer;
 }
 
 /* Progress bars */
@@ -284,8 +288,8 @@ table.table .avatar {
   height: 80vh;
   background-color: whitesmoke;
   z-index: 10;
-  margin-left: auto;
-  margin-right: auto;
+  
+  margin: -100px auto 50px auto;
   left: 0;
   right: 0;
   border-radius: 10px;
@@ -533,4 +537,12 @@ input[type=number] {
 
 .order-info, .order-customize{
   visibility: hidden;
+}
+
+.info_order_summary_append{
+  overflow: scroll;
+}
+
+.search-inp{
+  margin:auto;
 }

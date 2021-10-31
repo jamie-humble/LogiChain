@@ -1,4 +1,4 @@
-from json_handling import *
+from fire_handling import *
 
 PRODUCTS = [
   {"name": "Milk", "price":5, "seller":"supplier"},
@@ -16,7 +16,7 @@ PRODUCTS = [
 ]
 
 markup = 5
-{PRODUCTS.append({"name": "Bulk package "+x["name"], "price":(x["price"]+markup)*30, "seller":"vendor"}) for x in PRODUCTS if x["seller"]=="manufacturer"}
+{PRODUCTS.append({"name": "Bulk package "+x["name"], "price":(x["price"]+markup)*10, "seller":"vendor"}) for x in PRODUCTS if x["seller"]=="manufacturer"}
 
 def product_update():
   try:
@@ -35,5 +35,5 @@ class Product:
     self.price = price
     self.seller = seller
 
-    json_append(PRODUCT_REF,self.__dict__)    
+    fire_append(PRODUCT_REF,self.__dict__)    
 

@@ -1,15 +1,14 @@
 
-class SmartContractDisplay {
-  constructor(numb, identifier, sender, relative_type, amount, recipient, status) {
+class OrderDisplay {
+  constructor(numb, identifier, sender, relative_type, amount, recipient, status, products) {
     this.numb = numb;
     this.identifier = identifier;
-    this.sender = sender;
+    this.sender = sender.slice(0,1).toUpperCase()+sender.slice(1);
+    this.recipient = recipient.slice(0,1).toUpperCase()+recipient.slice(1);
     this.relative_type = relative_type;
     this.amount = amount;
-    this.recipient = recipient;
     this.status = status;
-    console.log(numb, identifier, sender, relative_type, amount, recipient, status)
-
+    this.products = products;
     this.build("smartcontract_append");
     // this.build(this.relative_type);
   }
@@ -36,6 +35,7 @@ class SmartContractDisplay {
 
     // should change dependant on status of contract
     // text-danger: red, text-warning:yellow, text-success:green
+    tr.className = "order_entry"
     number.innerHTML = this.numb;
     identifier.innerHTML = this.identifier;
     identifier.style = "display:none;"
@@ -43,7 +43,7 @@ class SmartContractDisplay {
     uname.innerHTML = this.sender;
     relative_type.innerHTML = this.relative_type;
     recipient.innerHTML = this.recipient;
-    amount.innerHTML = this.amount;
+    amount.innerHTML = "$"+this.amount;
     activity_span.style = "padding:0 0 10px 10px;"
 
     switch(this.status) {
@@ -99,13 +99,35 @@ class SmartContractDisplay {
   }
 
 }
+class Info_Product_Display {
+  constructor(amount, item, price) {
+    this.amount = "x "+amount;
+    this.item = item;
+    this.price = "$"+price;
+    this.build();
+    // this.build(this.relative_type);
+  }
 
-console.log(loaded_data);
-// constructor(numb, identifier, sender, relative_type, amount, recipient, status) {
+  build(){
+    // creation
+    const tr = document.createElement("tr");
+    const amount = document.createElement("td");
+    const item = document.createElement("td");
+    const price = document.createElement("td");
+ 
+    amount.innerHTML = this.amount;
+    item.innerHTML = this.item;
+    price.innerHTML = this.price;
 
-//   constructor(numb, identifier, sender, relative_type, amount, recipient, status) {
+    [amount,item,price].forEach(x => {
+      tr.appendChild(x);
+    });
 
-var contractDisplays = [];
+    $(".info_order_summary_append").append(tr);
+  }
+}
+
+var ORDER_MASTER_ARRAY = [];
 var i = 0;
 loaded_data["orders"].forEach( x => {
   if (x["order"]["order_sender"]==loaded_data["session_node"]){
@@ -114,18 +136,32 @@ loaded_data["orders"].forEach( x => {
   else{
     var relative_type = "Incoming";
   }
-  contractDisplays[i] = new SmartContractDisplay(
+  ORDER_MASTER_ARRAY[i] = new OrderDisplay(
     i,
     x["id"],
     x["order"]["order_sender"],
     relative_type,
     x["order"]["amount"],
     x["order"]["order_recipient"],
-    // x["order"]["status"]
-    "pending"
+    x["order"]["status"],
+    x["order"]["products"]
   )
   i++;
 });
+if(i==0){
+  const img_no_orders = document.createElement("img");
+  $(img_no_orders).attr("src","/static/img/no-orders.png");
+  $(img_no_orders).css("height","100%");
+  $(img_no_orders).css("width","100%");
+  const h_no_orders = document.createElement("h1");
+  $(h_no_orders).attr("class", "h2 text-center");
+  $(h_no_orders).css("margin-bottom", "100px");
+  $(h_no_orders).html("There are no orders for you right now, why not make one!")
+  $(".container-xl").append(h_no_orders);
+  $(".container-xl").append(img_no_orders);
+
+
+}
 
 class ProductDisplay{
   constructor(title, price, recipient){
@@ -192,7 +228,7 @@ class ProductDisplay{
 }
 
 function load_products(recipient){
-  nodes = ["supplier", "manufacturer", "vendor", "retailer"];
+  var nodes = ["supplier", "manufacturer", "vendor", "retailer"];
   if (recipient == "receive"){
     var pov = loaded_data["session_node"];
   }
@@ -231,6 +267,8 @@ function subtotal(){
 
 $(document).ready(function(){
   const Alert = window.Alert;
+  var nodes = ["supplier", "manufacturer", "vendor", "retailer"]
+
   subtotal();
 
   // Order information
@@ -248,6 +286,7 @@ $(document).ready(function(){
   $(".payment-method").hide();
   $(".send").hide();
 
+  var nodes = ["supplier", "manufacturer", "vendor", "retailer"]
   $(".rec-select-another").click(function() {
     $(".submit-order").attr("aria-details","send");
     $(".order-creation").trigger("reset");
@@ -257,6 +296,7 @@ $(document).ready(function(){
     $(".submit-order").html("Submit Order Request");
     $(".submit-order").attr("disabled",false);
     subtotal();
+    $(".recip-info").html("You ("+loaded_data["session_node"]+") will be sending products to "+nodes[nodes.indexOf(loaded_data["session_node"])+1])
 
   });
   $(".rec-select-me").click(function() {
@@ -270,6 +310,7 @@ $(document).ready(function(){
     $(".submit-order").html("Submit Order");
     $(".submit-order").attr("disabled",true);
     subtotal();
+    $(".recip-info").html("You ("+loaded_data["session_node"]+") will be receiving products from "+nodes[nodes.indexOf(loaded_data["session_node"])-1])
 
   });
 
@@ -295,8 +336,49 @@ $(document).ready(function(){
   $(".create-order").click(function(){
     $(".order-customize").show();
     $(".order-customize").css('visibility', 'visible');
+    $(".recip-info").html("You ("+loaded_data["session_node"]+") will be receiving products from "+nodes[nodes.indexOf(loaded_data["session_node"])-1])
+
   });
   
+  $(".order_entry").click(function(){
+    // Make the order information container visible
+    $(".order-info").show();
+    $(".info-hide").show();
+    $(".info-incoming").show();
+    $(".order-info").css('visibility', 'visible');
+
+    // Get information
+    var id = $(this).find("p").html();
+    for (let index = 0; index < ORDER_MASTER_ARRAY.length; index++) {
+      const x = ORDER_MASTER_ARRAY[index];
+      if (x.identifier == id){
+        var order_object = x;
+      }
+    }
+    try{
+      var _ = order_object;
+    }
+    catch{
+      return new Alert("error","Order not found","We could not find the order you selected, please reload the page and try again.")
+    }
+    // Display information
+    if(order_object["status"] == "pending" && loaded_data["session_node"]==order_object["order_sender"]){
+      $(".accept-order").attr("disabled",false);
+      $(".decline-order").attr("disabled",false);
+    }
+    else{
+      $(".accept-order").attr("disabled",true);
+      $(".decline-order").attr("disabled",true);
+
+    }
+    $(".accept-order").attr("id",id);
+    $(".decline-order").attr("id",id);
+    order_object.products.forEach(x=>{
+      var _ = new Info_Product_Display(x["value"],x["name"],x["price"]) 
+    });
+    $(".info-total").html(order_object["amount"]);
+
+  })
 
   $(".submit-order").click(function(){
     try{
@@ -308,7 +390,36 @@ $(document).ready(function(){
       return new Alert("warning", "Select some items", "Before proceeding with your order, please select some products.");
     }
     $(".order-creation").submit();
+  });
 
+  $( ".order-creation" ).submit(function( event ) {
+    event.preventDefault();
+    var submit_aria = $(".submit-order").attr("aria-details")
+    var product_data = [{"node":loaded_data["session_node"],"chose":submit_aria}];
+    $(this).serializeArray().forEach(x=>{
+      if (x["value"]!=""){
+        product_data.push(x);
+      }
+    });
+    if (submit_aria=="receive"){
+      new Alert("success","Your Order's Payment is Processing", "This may take a minute, please wait while the XRP ledger processes your order.")
+
+    }
+    $.ajax({
+      type: "POST",
+      url: "/order/submission",
+      contentType: "application/json",
+      data: JSON.stringify(product_data),
+      dataType: "json",
+      success: function(response) {
+        new Alert("success","Order Submitted",response.msg);
+        location.reload();
+      },
+      error: function(err) {
+        console.log(err);
+        new Alert("warning","Order Submission Error",err.msg);
+      }
+    });
   });
 
   $(".minus").click(function() {
@@ -334,10 +445,6 @@ $(document).ready(function(){
     subtotal();
   });
 
-  //  order info show()()()
-  //     $(".order-infp").css('visibility', 'visible');
-
-
   $(function() {
     $(".progress").each(function() {
   
@@ -361,95 +468,43 @@ $(document).ready(function(){
   
   });
 
-  
-
-  
-  $( ".order-creation" ).submit(function( event ) {
-    event.preventDefault();
-    var product_data = [{"node":loaded_data["session_node"],"chose":$(".submit-order").attr("aria-details")}];
-    $(this).serializeArray().forEach(x=>{
-      if (x["value"]!=""){
-        product_data.push(x);
-      }
-    });
+  $(".accept-order").click(function(){
+    var id = $(this).attr("id");
+    new Alert("success","Your Order's Payment is Processing", "This may take a minute, please wait while the XRP ledger processes your order.")
     $.ajax({
       type: "POST",
-      url: "/order/submission",
+      url: "/order/accept",
       contentType: "application/json",
-      data: JSON.stringify(product_data),
+      data: JSON.stringify({"id":id}),
       dataType: "json",
       success: function(response) {
-        new Alert("success","Order Submitted",response.msg);
-        location.reload();
-      },
-      error: function(err) {
-        // console.log(err);
-        new Alert("warning","Order Submission Error",err);
-      }
-    });
-  });
-
-  $(".choice").click(function(){
-    var jsonobject = {"decision":$(this).attr("title"), "identifier":$(this).parent().parent().siblings("p").html()}
-    $.ajax({
-      type: "POST",
-      url: "/manageescrow",
-      contentType: "application/json",
-      data: JSON.stringify(jsonobject),
-      dataType: "json",
-      success: function(response) {
+        new Alert(response.nature,response.msg_title,response.msg);
         location.reload()
-        alert(response.msg);
       },
       error: function(err) {
         console.log(err);
-        alert(err.responseText);
+        new Alert("warning","Order Management Error",err.msg);
       }
     });
-    if (jsonobject["decision"] == "Accept"){
-      alert("Please wait a moment while the XRP ledger processes your transaction.")
-
-    }
-
-  });
-
-  $("#order_request").click( function(){
+  })
+  $(".decline-order").click(function(){
+    var id = $(this).attr("id");
     $.ajax({
       type: "POST",
-      url: "/createescrow",
+      url: "/order/decline",
       contentType: "application/json",
-      data: JSON.stringify("request"),
+      data: JSON.stringify({"id":id}),
       dataType: "json",
       success: function(response) {
+        new Alert(response.nature,response.msg_title,response.msg);
         location.reload()
-        alert(response.msg);
       },
       error: function(err) {
         console.log(err);
-        alert(err.responseText);
+        new Alert("warning","Order Management Error",err.msg);
       }
     });
-
-  });
-
-  $("#order_send").click(function(){
-    $.ajax({
-      type: "POST",
-      url: "/createescrow",
-      contentType: "application/json",
-      data: JSON.stringify("send"),
-      dataType: "json",
-      success: function(response) {
-        location.reload()
-        alert(response.msg);
-      },
-      error: function(err) {
-        alert(err.responseText);
-      }
-    });
-  });
-
-
+  })
 });
 
 

@@ -9,7 +9,7 @@ $(document).ready(function(){
       dataType: "json",
       success: function(response) {
         location.href = response.redirect_url
-        alert(response.msg);
+        new Alert("success","Successfully Logged Out",response.msg);
       },
       error: function(err) {
         console.log(err);

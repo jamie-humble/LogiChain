@@ -1,7 +1,7 @@
 # This module is used to facilitate the creation of a user, including the XRPL wallet to go with it.
 
 import hashlib
-from json_handling import *
+from fire_handling import *
 from constants import *
 from xrpl.wallet import generate_faucet_wallet
 from xrpl.clients import WebsocketClient, JsonRpcClient
@@ -24,7 +24,7 @@ class User:
     self.email = email
     self.phone = phone
     # a user should always have a unique username
-    json_append(USER_REF, self.__dict__)
+    fire_append(USER_REF, self.__dict__)
 
 class Node:
   def __init__(self,type):
@@ -77,7 +77,7 @@ def construct_node_wallets():
   except AttributeError:
     # no nodes present
     nodes_missing = nodes_needed
-  _ = [json_append(NODE_REF,Node(x).__dict__) for x in nodes_missing]
+  _ = [fire_append(NODE_REF,Node(x).__dict__) for x in nodes_missing]
   return
 
 
