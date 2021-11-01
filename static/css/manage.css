@@ -541,6 +541,7 @@ input[type=number] {
 
 .info_order_summary_append{
   overflow: scroll;
+  max-height: 500px;
 }
 
 .search-inp{

@@ -287,7 +287,7 @@ $(document).ready(function(){
   $(".send").hide();
 
   var nodes = ["supplier", "manufacturer", "vendor", "retailer"]
-  $(".rec-select-another").click(function() {
+  $(".rec-select-send").click(function() {
     $(".submit-order").attr("aria-details","send");
     $(".order-creation").trigger("reset");
     $(".receive").hide();
@@ -299,7 +299,7 @@ $(document).ready(function(){
     $(".recip-info").html("You ("+loaded_data["session_node"]+") will be sending products to "+nodes[nodes.indexOf(loaded_data["session_node"])+1])
 
   });
-  $(".rec-select-me").click(function() {
+  $(".rec-select-receive").click(function() {
     // $(".cart-summ").empty();
     $(".submit-order").attr("aria-details","receive");
     $(".order-creation").trigger("reset");
@@ -346,6 +346,13 @@ $(document).ready(function(){
     $(".info-hide").show();
     $(".info-incoming").show();
     $(".order-info").css('visibility', 'visible');
+
+    if(loaded_data["session_node"]=="supplier"){
+      $(".rec-select-receive").attr("disabled",true);
+    }
+    else if(loaded_data["session_node"]=="retailer"){
+      $(".rec-select-send").attr("disabled",true);
+    }
 
     // Get information
     var id = $(this).find("p").html();
