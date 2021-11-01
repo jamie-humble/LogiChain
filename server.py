@@ -143,7 +143,7 @@ def submit_order():
         i+=1
     if participant_data["chose"] == "receive":
         fire_append(ORDER_REF,{"status":"confirmed" ,"order_sender":order_from, "order_recipient":order_to, "amount":total_price, "products":data[1:]})
-        order_payment(get_node(order_to)["classic_address"],get_node(order_from),total_price)
+        order_payment(get_node(order_from),get_node(order_to),total_price)
         return {"status":"200","msg":"Your order has been created and is already signed!"}
     else:
         fire_append(ORDER_REF,{"status":"pending" ,"order_sender":order_from, "order_recipient":order_to, "amount":total_price, "products":data[1:]})
@@ -157,7 +157,8 @@ def accept_order():
     order_recipient = get_node(order["order_recipient"])
     order_sender = get_node(order["order_sender"])
     # Now we execute our order transaction
-    order_payment(order_recipient["classic_address"],order_sender,order["amount"])
+    print(order_recipient)
+    order_payment(order_recipient,order_sender,order["amount"])
     return {"nature":"success","msg_title":"Order Signed","msg":"Your order has been signed and submitted to the XRP ledger!"}
     
 @app.route("/order/decline", methods=['POST'])

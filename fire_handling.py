@@ -156,7 +156,8 @@ def xrpl_transaction(recipient_classic,sender_wallet_dict,amount):
     print("Transaction from "+sender_wallet_dict["type"]+" for "+str(amount)+" drops")
     return True
 
-def order_payment(recipient_classic, sender_wallet_dict, fiat_amount):
+def order_payment(recipient_wallet_dict, sender_wallet_dict, fiat_amount):
+
   """
   This function is based on the model of LogiChain's payment system.
   The idea is that, since each node is technically a client, a node should not
@@ -176,16 +177,21 @@ def order_payment(recipient_classic, sender_wallet_dict, fiat_amount):
   the admin node can practically have an unlimited amount of XRP, but in a real buisness scenario,
   LogiChain would be buying from a propper exchange to fund the admin node, which funds the client nodes.
   """
+  recipient_classic = recipient_wallet_dict["classic_address"]
   # amount is in the form of drops, so we find the number of XRP with fiat_amount*XRP_CONVERSION
   # and then turn it into drops.
   amount = XRP_TO_DROPS(fiat_amount*XRP_CONVERSION)
   # First we will fund the admin node
   xrpl_admin_fund(amount)
   # Second, we transfer funds from the admin node to the client
-  xrpl_transaction(sender_wallet_dict["classic_address"], get_node("LogiChain-Admin"),amount)
+  admin_object = get_node("LogiChain-Admin")
+  xrpl_transaction(sender_wallet_dict["classic_address"], admin_object,amount)
   # Finally, we execute the orders transaction
   xrpl_transaction(recipient_classic, sender_wallet_dict, amount)
-  update_fiat_balance(sender_wallet_dict["type"],fiat_amount)
+  # Now, to protect the client from loss, we take away their XRP in exchange for fiat money
+  xrpl_transaction(admin_object["classic_address"],recipient_wallet_dict,amount)
+  update_fiat_balance(recipient_wallet_dict["type"],fiat_amount)
+
 
 
 def update_order_status(id,nature):
