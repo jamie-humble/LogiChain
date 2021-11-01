@@ -14,13 +14,18 @@ import qrcode
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
 app.config.update( 
+    # The secret key identifies which session data flask should use, if we want to reset out session, we would
+    # use the urandom() function to create and save a new secret key. 
     SECRET_KEY=b'\xe8\x87\xb7\xa3\x8c\xd6;AJOEH\x90\xf2\x11\x99'
     # SECRET_KEY = os.urandom(16)
 )
 
+# These functions make sure that the necessary objects are present in firebase, the nodes and products.
 construct_node_wallets()
 product_update()
 
+# I will only comment on this basic route function once,
+# It simply tells the server which HTML file to show when a cirtain URL is hit. 
 @app.route("/")
 def index():
     return flask.render_template("index.html")
@@ -33,6 +38,8 @@ def signin():
 def signup():
     return flask.render_template("signup.html")
 
+# This function is a receiver for an API from the signup page which will attempt to create a new user 
+# using the data received from the API.
 @app.route("/postsignup", methods=['POST'])
 def post_signup():
     data = request.get_json()
@@ -47,10 +54,6 @@ def post_signup():
 
     if session["users_created"] >= 20:
         return "You've created too many users"
-
-    # I would have liked to make these try catches nested, but it would not stop spitting type errors at me,
-    # so this pass to a non-nested try does the trick, its just a little ugly.
-    # pass
     try:
         User(
             data["username"], 

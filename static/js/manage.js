@@ -459,6 +459,8 @@ $(document).ready(function(){
   });
 
   $(".submit-order").click(function(){
+    $(".submit-order").attr("disabled",true);
+
     try{
       if(window.order_total==0){
         return new Alert("warning", "Select some items", "Before proceeding with your order, please select some products.");
