@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>LogiDesk QR Code</title>
+  <link href="{{ url_for('static', filename="img/logobyte.png") }}" rel="icon">
+  <link href="{{ url_for('static', filename="img/logobyte.png") }}" rel="apple-touch-icon">  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <link rel="stylesheet" href="{{ url_for('static', filename="css/manage.css") }}">
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  
+
+  <style>
+    .sidebar {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 100;
+      padding: 90px 0 0;
+      box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+      z-index: 99;
+    }
+
+    @media (max-width: 767.98px) {
+      .sidebar {
+        top: 11.5rem;
+        padding: 0;
+      }
+    }
+
+    .navbar {
+      box-shadow: inset 0 -1px 0 rgba(0, 0, 0, .1);
+    }
+
+    @media (min-width: 767.98px) {
+      .navbar {
+        top: 0;
+        position: sticky;
+        z-index: 999;
+      }
+    }
+
+    .sidebar .nav-link {
+      color: #333;
+    }
+
+    .sidebar .nav-link.active {
+      color: #0d6efd;
+    }
+
+    .section-bg{
+      background-color: white !important;
+    }
+
+    section{
+      padding:0 !important;
+    }
+
+    .why-us .accordion-list li{
+      background: #f3f5fa !important;
+    }
+  </style>
+  <style>
+    /* body{
+          margin-top:20px;
+          color: #1a202c;
+          text-align: left;
+          background-color: #e2e8f0;    
+      } */
+    main .main-body {
+      padding: 15px;
+    }
+
+    main .card {
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .1), 0 1px 2px 0 rgba(0, 0, 0, .06);
+    }
+
+    main .card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      word-wrap: break-word;
+      background-color: #fff;
+      background-clip: border-box;
+      border: 0 solid rgba(0, 0, 0, .125);
+      border-radius: .25rem;
+    }
+
+    main .card-body {
+      flex: 1 1 auto;
+      min-height: 1px;
+      padding: 1rem;
+    }
+
+    main .gutters-sm {
+      margin-right: -8px;
+      margin-left: -8px;
+    }
+
+    main .gutters-sm>main .col,
+    main .gutters-sm>main [class*=col-] {
+      padding-right: 8px;
+      padding-left: 8px;
+    }
+
+    main .mb-3,main .my-3 {
+      margin-bottom: 1rem !important;
+    }
+
+    main .bg-gray-300 {
+      background-color: #e2e8f0;
+    }
+
+    main .h-100 {
+      height: 100% !important;
+    }
+
+    main .shadow-none {
+      box-shadow: none !important;
+    }
+
+    .main-row{
+      height: 100vh;
+    }
+    .order-info{
+      visibility: visible !important;
+    }
+
+  </style>
+</head>
+
+<body>
+  <nav class="navbar navbar-light bg-light p-3">
+    <div class="d-flex col-12 col-md-3 col-lg-2 mb-2 mb-lg-0 flex-wrap flex-md-nowrap justify-content-between">
+      <a class="navbar-brand" href="#">
+        LogiChain Dashboard
+      </a>
+      <button class="navbar-toggler d-md-none collapsed mb-3" type="button" data-toggle="collapse"
+        data-target="#sidebar" aria-controls="sidebar" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    </div>
+    <div class="col-12 col-md-4 col-lg-2">
+      <input class="form-control form-control-dark search-inp" type="text" placeholder="Search" aria-label="Search">
+    </div>
+    <div class="col-12 col-md-5 col-lg-8 d-flex align-items-center justify-content-md-end mt-3 mt-md-0">
+      <div class="mr-3 mt-1">
+      </div>
+      <button class="btn btn-secondary logout" type="button">
+        Log out
+      </button>
+
+    </div>
+  </nav>
+  <div class="container-fluid">
+    <div class="row">
+      <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+        <div class="position-sticky">
+          <ul class="nav flex-column">
+            <li class="nav-item">
+              <a class="nav-link" aria-current="page" href="/dashboard">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                <span class="ml-2">Dashboard</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/LogiDesk/order">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>
+                <span class="ml-2">Orders</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link " href="/dashboard/supply">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-layers"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+                <span class="ml-2">Supply Chain</span>
+              </a>
+            </li>
+
+
+            <li class="nav-item">
+              <a class="nav-link" href="/LogiDesk/account">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-users"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                <span class="ml-2">Account</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+      <main class="col-md-9 ml-sm-auto col-lg-10 px-md-4 py-4">
+        <div class="row gutters-sm justify-content-center">
+          <div class="order-info shadow">
+
+            <div class="row info-outgoing-order justify-content-md-center align-items-center">
+              <div class="col">
+                <div class="container-xl" style="width: 500px !important;">
+                  <div class="table-responsive">
+                    <div class="table-wrapper" style="min-width: 200px !important;">
+                      <div class="table-title">
+                        <div class="row">
+                          <div class="col" >
+                            <h2>Order Summary</h2>
+                          </div>
+                        </div>
+                      </div>
+                      <table class="table table-striped table-hover">
+                        <thead>
+                          <tr>
+                            <th>Amount</th>
+                            <th>Item</th>
+                            <th>Price</th>
+                          </tr>
+                        </thead>
+                        <tbody class="info_order_summary_append">
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+                <div style="margin-left: 30px;">
+                  <p><span class="h5">Delivery</span class="lead"> $45</p>
+                  <p><span class="h2">Total</span class="lead"> $<span class="info-total"></span></p>
+  
+                </div>
+              </div>
+              <div class="col-xl-3 col-lg-6 mb-4">  
+                <div class="bg-white rounded-lg p-5 ">
+                  <h2 class="h6 font-weight-bold text-center mb-4">Overall progress</h2>
+                  <div class="progress mx-auto" data-value='100'>
+                    <span class="progress-left">
+                                  <span class="progress-bar border-primary"></span>
+                    </span>
+                    <span class="progress-right">
+                                  <span class="progress-bar border-primary"></span>
+                    </span>
+                    <div class="progress-value w-100 h-100 rounded-circle d-flex align-items-center justify-content-center">
+                      <div class="h2 font-weight-bold "><span class="progress-percent">100</span><sup class="small">%</sup></div>
+                    </div>
+                  </div>
+          
+                  <div class="row text-center mt-4">
+                    <div class="col-6 border-right">
+                      <div class="h4 font-weight-bold mb-0 progress-preparation">100%</div><span class="small text-gray">Preparation</span>
+                    </div>
+                    <div class="col-6">
+                      <div class="h4 font-weight-bold mb-0 progress-delivery">100%</div><span class="small text-gray">Delivery</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col">
+                <div class="row info-outgoing-update">
+                  <div class="container-xl" style="width: 500px !important;">
+                    <div class="table-responsive">
+                      <div class="table-wrapper" style="min-width: 200px !important;">
+                        <div class="table-title">
+                          <div class="row">
+                            <div class="col" >
+                              <h2>Status Updates</h2>
+                            </div>
+                          </div>
+                        </div>
+                        <table class="table table-striped table-hover">
+                          <thead>
+                            <tr>
+                              <th>Update</th>
+                            </tr>
+                          </thead>
+                          <tbody class="event_append">
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div> 
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+  <script>
+    const loaded_data = JSON.parse({{ _data | tojson | safe}});
+  </script>
+  <script src="/static/js/qr_info.js"></script>
+  <script type="module" src="/static/js/alerts.js"></script>
+  <script src="/static/js/logout.js"></script>
+</body>
+
+</html>

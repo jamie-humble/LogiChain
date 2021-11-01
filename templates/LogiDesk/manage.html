@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>LogiDesk Contracts</title>
+  <title>LogiDesk Orders</title>
   <link href="{{ url_for('static', filename="img/logobyte.png") }}" rel="icon">
   <link href="{{ url_for('static', filename="img/logobyte.png") }}" rel="apple-touch-icon">  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
@@ -14,11 +14,7 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="{{ url_for('static', filename="css/manage.css") }}">
 
-  <!-- <script>
-    $(document).ready(function () {
-      $('[data-toggle="tooltip"]').tooltip();
-    });
-  </script> -->
+
 </head>
 
 <body class="alert-container">
@@ -38,12 +34,10 @@
     <div class="col-12 col-md-5 col-lg-8 d-flex align-items-center justify-content-md-end mt-3 mt-md-0">
       <div class="mr-3 mt-1">
       </div>
-      <div class="dropdown">
-        <button class="btn btn-secondary logout" type="button" id="dropdownMenuButton" >
-          Log out
-        </button>
+      <button class="btn btn-secondary logout" type="button" id="dropdownMenuButton" >
+        Log out
+      </button>
 
-      </div>
     </div>
   </nav>
   <div class="container-fluid">
@@ -52,7 +46,7 @@
         <div class="position-sticky">
           <ul class="nav flex-column">
             <li class="nav-item">
-              <a class="nav-link" aria-current="page" href="/dashboard">
+              <a class="nav-link" aria-current="page" href="/LogiDesk">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                   stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                   class="feather feather-home">
@@ -60,6 +54,17 @@
                   <polyline points="9 22 9 12 15 12 15 22"></polyline>
                 </svg>
                 <span class="ml-2">Dashboard</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" href="/dashboard/order">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                  class="feather feather-file">
+                  <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
+                  <polyline points="13 2 13 9 20 9"></polyline>
+                </svg>
+                <span class="ml-2">Orders</span>
               </a>
             </li>
             <li class="nav-item">
@@ -74,20 +79,8 @@
                 <span class="ml-2">Supply Chain</span>
               </a>
             </li>
-
             <li class="nav-item">
-              <a class="nav-link active" href="/dashboard/manage">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                  class="feather feather-file">
-                  <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
-                  <polyline points="13 2 13 9 20 9"></polyline>
-                </svg>
-                <span class="ml-2">Contracts</span>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/dashboard/account">
+              <a class="nav-link" href="/LogiDesk/account">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-users"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
                 <span class="ml-2">Account</span>
               </a>
@@ -151,10 +144,11 @@
               </div>
             </div>
             <div class="col-xl-3 col-lg-6 mb-4">
+              <button type="button" class="btn btn-info btn-lg btn-block QR-code-select" style="margin-top: 15px; color: white;">Generate QR Code</button>
+
               <div class="bg-white rounded-lg p-5 ">
                 <h2 class="h6 font-weight-bold text-center mb-4">Overall progress</h2>
-                <!-- Progress bar 1 -->
-                <div class="progress mx-auto" data-value='80'>
+                <div class="progress mx-auto" data-value='100'>
                   <span class="progress-left">
                                 <span class="progress-bar border-primary"></span>
                   </span>
@@ -162,21 +156,18 @@
                                 <span class="progress-bar border-primary"></span>
                   </span>
                   <div class="progress-value w-100 h-100 rounded-circle d-flex align-items-center justify-content-center">
-                    <div class="h2 font-weight-bold">80<sup class="small">%</sup></div>
+                    <div class="h2 font-weight-bold "><span class="progress-percent">100</span><sup class="small">%</sup></div>
                   </div>
                 </div>
-                <!-- END -->
         
-                <!-- Demo info -->
                 <div class="row text-center mt-4">
                   <div class="col-6 border-right">
-                    <div class="h4 font-weight-bold mb-0">28%</div><span class="small text-gray">Preparation</span>
+                    <div class="h4 font-weight-bold mb-0 progress-preparation">100%</div><span class="small text-gray">Preparation</span>
                   </div>
                   <div class="col-6">
-                    <div class="h4 font-weight-bold mb-0">60%</div><span class="small text-gray">Delivery</span>
+                    <div class="h4 font-weight-bold mb-0 progress-delivery">100%</div><span class="small text-gray">Delivery</span>
                   </div>
                 </div>
-                <!-- END -->
               </div>
             </div>
             <div class="col">
@@ -200,12 +191,10 @@
                       <table class="table table-striped table-hover">
                         <thead>
                           <tr>
-                            <th>Amount</th>
-                            <th>Item</th>
-                            <th>Price</th>
+                            <th>Update</th>
                           </tr>
                         </thead>
-                        <tbody id="smartcontract_append">
+                        <tbody class="event_append">
                         </tbody>
                       </table>
                     </div>

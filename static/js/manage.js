@@ -159,9 +159,26 @@ if(i==0){
   $(h_no_orders).html("There are no orders for you right now, why not make one!")
   $(".container-xl").append(h_no_orders);
   $(".container-xl").append(img_no_orders);
-
-
 }
+
+class Event_Display {
+  constructor(event) {
+    this.event = event;
+    this.build();
+    // this.build(this.relative_type);
+  }
+
+  build(){
+    // creation
+    const tr = document.createElement("tr");
+    const event = document.createElement("td");
+    $(event).html(this.event);
+
+    tr.appendChild(event);
+    $(".event_append").append(tr);
+  }
+}
+
 
 class ProductDisplay{
   constructor(title, price, recipient){
@@ -229,14 +246,13 @@ class ProductDisplay{
 
 function load_products(recipient){
   var nodes = ["supplier", "manufacturer", "vendor", "retailer"];
-  if (recipient == "receive"){
+  if (recipient == "send"){
     var pov = loaded_data["session_node"];
   }
-  else if(recipient == "send"){
+  else if(recipient == "receive"){
     var findInd = (element) => element == loaded_data["session_node"];
     var pov = nodes[1+nodes.findIndex(findInd)];
   }
-  // loaded_data["products"].forEach( x => {
   for (const [key, value] of Object.entries(loaded_data["products"])){
     if (value["seller"] == pov){
       var _ = new ProductDisplay(value["name"],value["price"],recipient);
@@ -287,7 +303,8 @@ $(document).ready(function(){
   $(".send").hide();
 
   var nodes = ["supplier", "manufacturer", "vendor", "retailer"]
-  $(".rec-select-send").click(function() {
+
+  function send_select(){
     $(".submit-order").attr("aria-details","send");
     $(".order-creation").trigger("reset");
     $(".receive").hide();
@@ -297,9 +314,9 @@ $(document).ready(function(){
     $(".submit-order").attr("disabled",false);
     subtotal();
     $(".recip-info").html("You ("+loaded_data["session_node"]+") will be sending products to "+nodes[nodes.indexOf(loaded_data["session_node"])+1])
+  }
 
-  });
-  $(".rec-select-receive").click(function() {
+  function receive_select(){
     // $(".cart-summ").empty();
     $(".submit-order").attr("aria-details","receive");
     $(".order-creation").trigger("reset");
@@ -312,6 +329,13 @@ $(document).ready(function(){
     subtotal();
     $(".recip-info").html("You ("+loaded_data["session_node"]+") will be receiving products from "+nodes[nodes.indexOf(loaded_data["session_node"])-1])
 
+  }
+
+  $(".rec-select-send").click(function() {
+    send_select();
+  });
+  $(".rec-select-receive").click(function() {
+    receive_select()
   });
 
   $(".payment-method-select").click(function(){
@@ -338,21 +362,27 @@ $(document).ready(function(){
     $(".order-customize").css('visibility', 'visible');
     $(".recip-info").html("You ("+loaded_data["session_node"]+") will be receiving products from "+nodes[nodes.indexOf(loaded_data["session_node"])-1])
 
+    if(loaded_data["session_node"]=="supplier"){
+      $(".rec-select-receive").attr("disabled",true);
+      $(".rec-select-send").attr("checked",true);
+      $(".rec-select-receive").attr("checked",false);
+
+      send_select();
+    }
+    else if(loaded_data["session_node"]=="retailer"){
+      $(".rec-select-send").attr("disabled",true);
+      receive_select();
+    }
+
   });
   
   $(".order_entry").click(function(){
     // Make the order information container visible
+    $(".info_order_summary_append").empty();
     $(".order-info").show();
     $(".info-hide").show();
     $(".info-incoming").show();
     $(".order-info").css('visibility', 'visible');
-
-    if(loaded_data["session_node"]=="supplier"){
-      $(".rec-select-receive").attr("disabled",true);
-    }
-    else if(loaded_data["session_node"]=="retailer"){
-      $(".rec-select-send").attr("disabled",true);
-    }
 
     // Get information
     var id = $(this).find("p").html();
@@ -369,14 +399,47 @@ $(document).ready(function(){
       return new Alert("error","Order not found","We could not find the order you selected, please reload the page and try again.")
     }
     // Display information
+    if(order_object["status"] == "pending"){
+      $(".progress").attr("data-value","25");
+      $(".progress-percent").html("25");
+      $(".progress-preparation").html("50%");
+      $(".progress-delivery").html("0%");
+      $(".QR-code-select").hide();
+    }
+    else if(order_object["status"] == "confirmed"){
+      $(".progress").attr("data-value","100");
+      $(".progress-percent").html("100");
+      $(".progress-preparation").html("100%");
+      $(".progress-delivery").html("100%");
+      $(".QR-code-select").show();
+      $(".QR-code-select").attr("id",id);
+    }
+    else if(order_object["status"] == "cancelled"){
+      $(".progress").attr("data-value","0");
+      $(".progress-percent").html("0");
+      $(".progress-preparation").html("100%");
+      $(".progress-delivery").html("0%");
+      $(".QR-code-select").hide();
+    }
+
     if(order_object["status"] == "pending" && loaded_data["session_node"]==order_object["order_sender"]){
+      $(".accept-order").show();
+      $(".decline-order").show();
+
       $(".accept-order").attr("disabled",false);
       $(".decline-order").attr("disabled",false);
+      
     }
-    else{
+    else if (order_object["status"] == "pending"){
       $(".accept-order").attr("disabled",true);
-      $(".decline-order").attr("disabled",true);
+      $(".accept-order").hide();
+      $(".decline-order").attr("disabled",false);
+      $(".decline-order").html("Cancel Order");
 
+    }
+    else if(order_object["status"] == "confirmed" || order_object["status"] == "cancelled"){
+      $(".accept-order").hide();
+      $(".decline-order").hide();
     }
     $(".accept-order").attr("id",id);
     $(".decline-order").attr("id",id);
@@ -385,7 +448,15 @@ $(document).ready(function(){
     });
     $(".info-total").html(order_object["amount"]);
 
-  })
+
+    for (const [key, value] of Object.entries(loaded_data["events"])){
+      if (value["order_id"] == id){
+        value["tracking_data"].forEach(x => {
+          new Event_Display(x);
+        });
+      }
+    }
+  });
 
   $(".submit-order").click(function(){
     try{
@@ -424,7 +495,7 @@ $(document).ready(function(){
       },
       error: function(err) {
         console.log(err);
-        new Alert("warning","Order Submission Error",err.msg);
+        new Alert("warning","Order Submission Error",err.responseText);
       }
     });
   });
@@ -490,10 +561,10 @@ $(document).ready(function(){
       },
       error: function(err) {
         console.log(err);
-        new Alert("warning","Order Management Error",err.msg);
+        new Alert("warning","Order Management Error",err.responseText);
       }
     });
-  })
+  });
   $(".decline-order").click(function(){
     var id = $(this).attr("id");
     $.ajax({
@@ -508,10 +579,29 @@ $(document).ready(function(){
       },
       error: function(err) {
         console.log(err);
-        new Alert("warning","Order Management Error",err.msg);
+        new Alert("warning","Order Management Error",err.responseText);
       }
     });
-  })
+  });
+
+  $(".QR-code-select").click(function(){
+    var id = $(this).attr("id");
+    $.ajax({
+      type: "POST",
+      url: "/LogiDesk/order/qr/generate",
+      contentType: "application/json",
+      data: JSON.stringify({"id":id}),
+      dataType: "json",
+      success: function(response) {
+        new Alert("success",response.msg_title,response.msg);
+        window.location.href = "order/qr/show";
+      },
+      error: function(err) {
+        console.log(err);
+        new Alert("warning","Order Management Error",err.responseText);
+      }
+    });
+  });
 });
 
 

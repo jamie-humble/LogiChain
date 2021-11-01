@@ -11,7 +11,9 @@ from xrpl.clients import WebsocketClient
 from xrpl.account import get_balance
 from constants import *
 from fire_handling import *
-from products import PRODUCTS
+from products import PRODUCTS, Tracking_Data
+import qrcode
+
 
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
@@ -84,21 +86,6 @@ def check():
         return flask.render_template("LogiDesk/index.html")
     except:
         return flask.render_template("index.html")
-
-
-@app.route("/dashboard/supply")
-def supply():
-    with open('EVENT_FILE') as a:
-        json_array = json.load(a)
-    supply_chain.update_node_status()
-    _data = [supply_chain.__dict__, json_array]
-
-    try: 
-        # check if user is logged in
-        _ = session["username"]
-        return flask.render_template("supply.html", _data = _data)
-    except:
-        return flask.render_template("index.html")
     
 
 @app.route("/postnodefill", methods=['POST'])
@@ -114,7 +101,7 @@ def node_filled():
         return "ERROR: node could not be changed"
 
 
-@app.route("/LogiChain/contract")
+@app.route("/LogiDesk/order")
 def manage():
     # try catch will pop if session[username] is undefined -- user not logged in
     try:
@@ -122,7 +109,7 @@ def manage():
     except:
         return flask.render_template("index.html")
     session_node = get_user(session["username"])["node"]
-    _data = {"products":get_all_products(), "session_node": session_node, "orders":fetch_nodes_orders(session_node)}
+    _data = {"products":get_all_products(), "session_node": session_node, "orders":fetch_nodes_orders(session_node), "events":get_all_events()}
     return flask.render_template("LogiDesk/manage.html", _data = json.dumps(_data))
 
 @app.route("/order/submission", methods=['POST'])
@@ -142,17 +129,20 @@ def submit_order():
         total_price += sum([y["price"]*int(x["value"]) for y in PRODUCTS if x["name"]==y["name"]])
         i+=1
     if participant_data["chose"] == "receive":
-        fire_append(ORDER_REF,{"status":"confirmed" ,"order_sender":order_from, "order_recipient":order_to, "amount":total_price, "products":data[1:]})
+        order_id = fire_append(ORDER_REF,{"status":"confirmed" ,"order_sender":order_from, "order_recipient":order_to, "amount":total_price, "products":data[1:]})
+        Tracking_Data(order_id)
         order_payment(get_node(order_from),get_node(order_to),total_price)
         return {"status":"200","msg":"Your order has been created and is already signed!"}
     else:
-        fire_append(ORDER_REF,{"status":"pending" ,"order_sender":order_from, "order_recipient":order_to, "amount":total_price, "products":data[1:]})
+        order_id = fire_append(ORDER_REF,{"status":"pending" ,"order_sender":order_from, "order_recipient":order_to, "amount":total_price, "products":data[1:]})
+        Tracking_Data(order_id)
         return {"status":"200","msg":"Your order has been created and must be signed!"}
 
 @app.route("/order/accept", methods=['POST'])
 def accept_order():
     order_id = request.get_json()["id"]
     update_order_status(order_id,"accept")
+    Tracking_Data(order_id)
     order = get_order(order_id)
     order_recipient = get_node(order["order_recipient"])
     order_sender = get_node(order["order_sender"])
@@ -165,27 +155,45 @@ def accept_order():
 def decline_order():
     data = request.get_json()
     update_order_status(data["id"],"decline")
+    Tracking_Data(data["id"])
     return {"nature":"warning","msg_title":"Order Declined", "msg":"You have declined and order, it is now inactive and your funds will be released"}
 
-    
+@app.route("/LogiDesk/order/qr/generate", methods=['POST'])
+def qr_generate():
+    order_id = request.get_json()["id"]
+    img = qrcode.make('logichain.herokuapp.com/LogiDesk/order/qr/?id='+str(order_id))
+    img.save("static/img/qr/order_qr.png")
+    return {"msg_title":"QR code created","msg":"You will now be redirected to your QR code"}
+
+@app.route("/LogiDesk/order/qr/show")
+def qr_show():
+    return flask.render_template("LogiDesk/qr_code.html")    
+
+@app.route("/LogiDesk/order/qr/")
+def qr_info():
+    order_id = request.args.get("id")
+    order = get_order(order_id)
+    _data = {"id":order_id, "events":get_event(order_id), "products":order["products"], "total":order["amount"]}
+    return flask.render_template("LogiDesk/qr_code_info.html", _data = json.dumps(_data))   
 
 # gets account data of signed in user
-@app.route("/dashboard/account")
+@app.route("/LogiDesk/account")
 def account():
     try:
         _ = session["username"]
     except:
         return flask.render_template("index.html")
-    _data = supply_chain.get_user(_)
-    with WebsocketClient("wss://s.altnet.rippletest.net:51233") as client:
-        _data["balance"] = get_balance(_data["wallet"]["classic_address"], client)
-    return flask.render_template("account.html", _data = json.dumps(_data))
+    _data = get_node(get_user(session["username"])["node"])
+    _data["username"] = session["username"]
+    return flask.render_template("LogiDesk/account.html", _data = json.dumps(_data))
 
 @app.route("/logout", methods=['POST'])
 def logout():
     session["username"] = None
     print("Logout")
     return  flask.jsonify({"msg":"You have been logged out, come back soon!", "redirect": True, "redirect_url":"/"})
+
+
 
 port = int(os.environ.get("PORT", 5000))
 

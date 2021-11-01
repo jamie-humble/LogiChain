@@ -46,3 +46,5 @@
     #update our object
     self.update_node_status()
     change = Event(username, {"bool":False},"node_change")
+
+    receiving_node[:1].upper()+receiving_node[1:]

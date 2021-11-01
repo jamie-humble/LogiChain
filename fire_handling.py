@@ -16,10 +16,10 @@ from xrpl.wallet import generate_faucet_wallet
 # The logichain prototype uses JSON files to store the supply chain's data,
 # here we are using json to store the user object   
 
-def fire_append(type, data_in: dict):
+def fire_append(ref_type, data_in: dict):
   try:
-    type.push(data_in)
-    return "Data pushed to database"
+    push = ref_type.push(data_in)
+    return push.key
   except:
     return "Data could not be pushed to database"
 
@@ -37,6 +37,9 @@ def get_all_nodes():
 
 def get_all_orders():
   return ORDER_REF.get()
+
+def get_all_events():
+  return EVENT_REF.get()
 
 def fetch_nodes_orders(node):
   if get_all_orders() == None: return []
@@ -82,6 +85,11 @@ def get_prev_node(node):
     i+=1
   return "ERROR: No nodes found"
 
+def get_event(order_id):
+  for k,v in get_all_events().items():
+    if v["order_id"] == order_id:
+      return {"key":k,"value":v}
+  return False
 
 def login(username, password):
   for k,v in get_all_users().items():
@@ -99,6 +107,12 @@ def update_fiat_balance(node, amount):
   fire_object.update({
     "fiat_balance":balance
   })
+
+def update_event(order_id,tracking_data):
+  event_id = get_event(order_id)["key"]
+  fire_object = EVENT_REF.child(event_id)
+  fire_object.update(tracking_data)
+
 
 # This class is used to construct a wallet object to be used in the XRPL
 class wallet_json_to_object:

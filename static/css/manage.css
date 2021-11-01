@@ -539,11 +539,17 @@ input[type=number] {
   visibility: hidden;
 }
 
-.info_order_summary_append{
-  overflow: scroll;
-  max-height: 500px;
+ .event_append{
+  display: block;
+  overflow-y: scroll;
+  max-height: 400px;
+}
+
+ .event_append>tr{
+  display: table;
+  width: 100%;
 }
 
 .search-inp{
-  margin:auto;
+  margin:auto !important;
 }
