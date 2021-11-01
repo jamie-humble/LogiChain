@@ -1,17 +1,13 @@
-# The purpose of this document is to run a flask server and interact with the webapp using the other two modules.
+# The purpose of this document is to run a flask server and interact with the webapp using the other modules.
 
 import flask
-from flask import jsonify, request, session, redirect, url_for
-import users
-from supply import supply_chain, Event
-import json
-import os
-import hashlib
-from xrpl.clients import WebsocketClient
-from xrpl.account import get_balance
+from flask import request, session
+from users import *
 from constants import *
 from fire_handling import *
-from products import PRODUCTS, Tracking_Data
+from products import PRODUCTS, Tracking_Data, product_update
+import json
+import os
 import qrcode
 
 
@@ -21,6 +17,9 @@ app.config.update(
     SECRET_KEY=b'\xe8\x87\xb7\xa3\x8c\xd6;AJOEH\x90\xf2\x11\x99'
     # SECRET_KEY = os.urandom(16)
 )
+
+construct_node_wallets()
+product_update()
 
 @app.route("/")
 def index():
@@ -53,7 +52,7 @@ def post_signup():
     # so this pass to a non-nested try does the trick, its just a little ugly.
     # pass
     try:
-        users.User(
+        User(
             data["username"], 
             data["password"], 
             data["role"], 
@@ -87,20 +86,6 @@ def check():
     except:
         return flask.render_template("index.html")
     
-
-@app.route("/postnodefill", methods=['POST'])
-def node_filled():
-    try:
-        _ = session["username"]
-    except: return "ERROR, user could not be found, please log back in"
-    try:
-        node = request.get_json()
-        supply_chain.set_node_stat(session["username"],node)
-        return {"msg":"SUCCESS: Node changed to "+node, "redirect": True, "redirect_url":"/dashboard/supply"}
-    except:
-        return "ERROR: node could not be changed"
-
-
 @app.route("/LogiDesk/order")
 def manage():
     # try catch will pop if session[username] is undefined -- user not logged in
