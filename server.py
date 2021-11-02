@@ -68,6 +68,8 @@ def post_signup():
         )
         session["username"] = data["username"]
         session["users_created"] += 1
+        # For an API reciever, its important that their is a returned value which felflects the success of the API call, we do this here
+        # and throughout the rest of the script. 
         return {"msg":"Congrats! You've successfully created a LogiChain account", "redirect": True, "redirect_url":"/LogiDesk"}
     except FileNotFoundError:
         return {"msg":"ERROR: User could not be created", "redirect": False, "redirect_url":""}
@@ -124,7 +126,7 @@ def submit_order():
     # Then we append our order data to firebase, depending on the recipient of the order, it will either be instantly payed for, or it will need to be signed. 
     if participant_data["chose"] == "receive":
         order_id = fire_append(ORDER_REF,{"status":"confirmed" ,"order_sender":order_from, "order_recipient":order_to, "amount":total_price, "products":data[1:]})
-        # This is the first instance we see of tracking_data, which is used to track the origin of an order 
+        # This is the first instance we see of tracking_data, which is used to track the origin of an order all the way back to the supplier node.
         Tracking_Data(order_id)
         order_payment(get_node(order_from),get_node(order_to),total_price)
         return {"status":"200","msg":"Your order has been created and is already signed!"}
@@ -133,19 +135,21 @@ def submit_order():
         Tracking_Data(order_id)
         return {"status":"200","msg":"Your order has been created and must be signed!"}
 
+# An API to accept orders
 @app.route("/order/accept", methods=['POST'])
 def accept_order():
     order_id = request.get_json()["id"]
+    # Record the signing of the order and change the status of the order.
     update_order_status(order_id,"accept")
     Tracking_Data(order_id)
-    order = get_order(order_id)
+    order = get_order(order_id) 
     order_recipient = get_node(order["order_recipient"])
     order_sender = get_node(order["order_sender"])
-    # Now we execute our order transaction
-    print(order_recipient)
+    # Now we execute our order payment
     order_payment(order_recipient,order_sender,order["amount"])
     return {"nature":"success","msg_title":"Order Signed","msg":"Your order has been signed and submitted to the XRP ledger!"}
     
+# An API to decline orders by simply chaing their status
 @app.route("/order/decline", methods=['POST'])
 def decline_order():
     data = request.get_json()
@@ -153,17 +157,22 @@ def decline_order():
     Tracking_Data(data["id"])
     return {"nature":"warning","msg_title":"Order Declined", "msg":"You have declined and order, it is now inactive and your funds will be released"}
 
+# Once this API is hit with an order ID, it generates a QR code to view the order information.
 @app.route("/LogiDesk/order/qr/generate", methods=['POST'])
 def qr_generate():
     order_id = request.get_json()["id"]
+    # Store the order ID in the URL of the QR code
     img = qrcode.make('logichain.herokuapp.com/LogiDesk/order/qr/?id='+str(order_id))
     img.save("static/img/qr/order_qr.png")
     return {"msg_title":"QR code created","msg":"You will now be redirected to your QR code"}
 
+# Once the QR code is made above, the QR code is displayed through this webpage. 
 @app.route("/LogiDesk/order/qr/show")
 def qr_show():
     return flask.render_template("LogiDesk/qr_code.html")    
 
+# When a QR code is scanned, this route is hit, feeding an order info page information about the order in question.
+# This page will usually be accessed through a phone as that will be the easiest to scan the QR code, but once its ready,  
 @app.route("/LogiDesk/order/qr/")
 def qr_info():
     order_id = request.args.get("id")
@@ -171,7 +180,7 @@ def qr_info():
     _data = {"id":order_id, "events":get_event(order_id), "products":order["products"], "total":order["amount"]}
     return flask.render_template("LogiDesk/qr_code_info.html", _data = json.dumps(_data))   
 
-# gets account data of signed in user
+# Display the account of a user
 @app.route("/LogiDesk/account")
 def account():
     try:

@@ -423,6 +423,36 @@ $(document).ready(function(){
       return new Alert("error","Order not found","We could not find the order you selected, please reload the page and try again.")
     }
     // Display information
+
+    order_object["sender"] = order_object["sender"].toLowerCase();
+    order_object["recipient"] = order_object["recipient"].toLowerCase();
+
+    if(order_object["status"] == "pending"){
+
+      if(loaded_data["session_node"] == order_object["recipient"]){
+
+        $(".accept-order").show();
+        $(".decline-order").show();
+
+        $(".accept-order").attr("disabled",false);
+        $(".decline-order").attr("disabled",false);  
+      }
+      else{
+
+        $(".accept-order").attr("disabled",true);
+        $(".accept-order").hide();
+        $(".decline-order").attr("disabled",false);
+        $(".decline-order").html("Cancel Order");
+      }
+    }
+
+    else if(order_object["status"] == "confirmed" || order_object["status"] == "cancelled"){
+      $(".accept-order").hide();
+      $(".decline-order").hide();
+    }
+    $(".accept-order").attr("id",id);
+    $(".decline-order").attr("id",id);
+
     if(order_object["status"] == "pending"){
       $(".progress").attr("data-value","25");
       $(".progress-percent").html("25");
@@ -449,27 +479,6 @@ $(document).ready(function(){
       progress();
     }
 
-    if(order_object["status"] == "pending" && loaded_data["session_node"]==order_object["order_sender"]){
-      $(".accept-order").show();
-      $(".decline-order").show();
-
-      $(".accept-order").attr("disabled",false);
-      $(".decline-order").attr("disabled",false);
-      
-    }
-    else if (order_object["status"] == "pending"){
-      $(".accept-order").attr("disabled",true);
-      $(".accept-order").hide();
-      $(".decline-order").attr("disabled",false);
-      $(".decline-order").html("Cancel Order");
-
-    }
-    else if(order_object["status"] == "confirmed" || order_object["status"] == "cancelled"){
-      $(".accept-order").hide();
-      $(".decline-order").hide();
-    }
-    $(".accept-order").attr("id",id);
-    $(".decline-order").attr("id",id);
     order_object.products.forEach(x=>{
       var _ = new Info_Product_Display(x["value"],x["name"],x["price"]) 
     });

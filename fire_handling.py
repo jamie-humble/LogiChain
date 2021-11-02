@@ -11,11 +11,9 @@ from xrpl.account import get_balance
 from math import ceil
 from xrpl.wallet import generate_faucet_wallet
 
-# We are using this module to handle all of our json operations to eliminate repetition.
+# We are using this module to handle all of our firebase operations to eliminate repetition and promote elegance.
 
-# The logichain prototype uses JSON files to store the supply chain's data,
-# here we are using json to store the user object   
-
+# The append function which is responsible for adding any new information to firebase
 def fire_append(ref_type, data_in: dict):
   try:
     push = ref_type.push(data_in)
@@ -23,6 +21,7 @@ def fire_append(ref_type, data_in: dict):
   except:
     return "Data could not be pushed to database"
 
+# Get all functions, used to fetch every child of an object.
 def get_all_users():
   get = USER_REF.get()
   if get == None:
@@ -40,7 +39,9 @@ def get_all_orders():
 
 def get_all_events():
   return EVENT_REF.get()
+# END get all functions 
 
+# Get functions, used for acquiring specific data given a primary key of some sort
 def fetch_nodes_orders(node):
   if get_all_orders() == None: return []
   return [{"id":k, "order":v} for k,v in get_all_orders().items() if v["order_recipient"]==node or v["order_sender"]==node]
@@ -90,7 +91,10 @@ def get_event(order_id):
     if v["order_id"] == order_id:
       return {"key":k,"value":v}
   return False
+# END get functions
 
+# Technically the login function is a get function since it utilizes two primary keys,
+# but since it only returns a bool it is unique enough to acknowledge by itself.  
 def login(username, password):
   for k,v in get_all_users().items():
     if (
@@ -100,6 +104,7 @@ def login(username, password):
       return True
   return False
 
+# Update functions, which update specific fields of objects given a primary key and data.
 def update_fiat_balance(node, amount):
   node_obj = get_node_object(node)
   balance = int(node_obj["value"]["fiat_balance"])+amount
@@ -113,8 +118,24 @@ def update_event(order_id,tracking_data):
   fire_object = EVENT_REF.child(event_id)
   fire_object.update(tracking_data)
 
+def update_order_status(id,nature):
+  fire_object = ORDER_REF.child(id)
+  if nature == "accept":
+    fire_object.update({
+      "status":"confirmed"
+    })
+    return True
+  elif nature == "decline":
+    fire_object.update({
+      "status":"cancelled"
+    })
+    return True
+  return False
+# END update functions
 
-# This class is used to construct a wallet object to be used in the XRPL
+
+# XRPL functions
+# wallet_json_to_object is used to transform a dict into an object, simply so that xrpl-py can use it.
 class wallet_json_to_object:
   def __init__(self, json):
     self.seed = json["seed"]
@@ -123,10 +144,11 @@ class wallet_json_to_object:
     self.classic_address = json["classic_address"]
     self.sequence = json["sequence"]
 
+# xrpl_admin_fund is used to make sure that the logichain admin node is always sufficiently funded to create transactions.
 def xrpl_admin_fund(amount):
   """
     This function should look like this, but since the XRP network wont let you transact
-    straight from its admin node, this function is creating new XRP accounts and stripping
+    straight from ITS admin node, this function is creating new XRP accounts and stripping
     them of their funds to give to the LogiChain admin.
 
     transaction = Payment(
@@ -154,6 +176,7 @@ def xrpl_admin_fund(amount):
       print("Wallet #"+str(x)+" has been emptied")
 
 
+# xrpl_transaction is a function to elegantly send XRP transactions
 def xrpl_transaction(recipient_classic,sender_wallet_dict,amount):
   with WebsocketClient(RPC_URI) as client:
     trans = Payment(
@@ -171,7 +194,6 @@ def xrpl_transaction(recipient_classic,sender_wallet_dict,amount):
     return True
 
 def order_payment(recipient_wallet_dict, sender_wallet_dict, fiat_amount):
-
   """
   This function is based on the model of LogiChain's payment system.
   The idea is that, since each node is technically a client, a node should not
@@ -205,20 +227,3 @@ def order_payment(recipient_wallet_dict, sender_wallet_dict, fiat_amount):
   # Now, to protect the client from loss, we take away their XRP in exchange for fiat money
   xrpl_transaction(admin_object["classic_address"],recipient_wallet_dict,amount)
   update_fiat_balance(recipient_wallet_dict["type"],fiat_amount)
-
-
-
-def update_order_status(id,nature):
-  fire_object = ORDER_REF.child(id)
-  if nature == "accept":
-    fire_object.update({
-      "status":"confirmed"
-    })
-    return True
-  elif nature == "decline":
-    fire_object.update({
-      "status":"cancelled"
-    })
-    return True
-  return False
-

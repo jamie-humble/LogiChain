@@ -16,7 +16,7 @@ class User:
     self.username = username
     # Here we will use sha256 to hash passwords as securely as possible, like a real coder.
     # In order for a user to log in, we simply hash the password they provide and see if it 
-    # matches this hash, as we see in line 39 of server.py.
+    # matches this hash.
     self.password = hashlib.sha256(password.encode()).hexdigest()
     self.node = role
     self.firstname = firstname
@@ -40,6 +40,7 @@ class Node:
     self.transact(wallet)
 
   def transact(self,wallet):
+    # If the node is an admin, or the admin cant be found, return
     if self.type == "LogiChain-Admin":
       return
     admin = get_node("LogiChain-Admin")
