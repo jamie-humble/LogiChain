@@ -47,6 +47,7 @@ def post_signup():
     if get_user(data["username"]) != False:
         return "ERROR: Username already exists"
 
+    # First, detect any Manindras and stop them from making 4000 users again.
     try:
         _ = session["users_created"]
     except:
@@ -55,6 +56,7 @@ def post_signup():
     if session["users_created"] >= 20:
         return "You've created too many users"
     try:
+        # Create user, which will be appended to firebase in the User object  
         User(
             data["username"], 
             data["password"], 
@@ -89,6 +91,7 @@ def check():
     except:
         return flask.render_template("index.html")
     
+# This function acts as a page route but it also transmits data to be processed bt javascript and used to display information on the webpage.
 @app.route("/LogiDesk/order")
 def manage():
     # try catch will pop if session[username] is undefined -- user not logged in
@@ -104,20 +107,24 @@ def manage():
 def submit_order():
     data = request.get_json()
     participant_data = data[0]
+    # We use the API data to decern who the order is addressed to.
     if participant_data["chose"] == "receive":
         order_to = participant_data["node"]
         order_from = get_prev_node(participant_data["node"])
     elif participant_data["chose"] == "send":
         order_from = participant_data["node"]
         order_to = get_next_node(participant_data["node"])
+    # Then we begin to evaluate the total cost of the order.
     total_price = SHIPPING_COST
     i=1
     for x in data[1:]:
         data[i]["price"] = [y["price"] for y in PRODUCTS if x["name"]==y["name"]][0]
         total_price += sum([y["price"]*int(x["value"]) for y in PRODUCTS if x["name"]==y["name"]])
         i+=1
+    # Then we append our order data to firebase, depending on the recipient of the order, it will either be instantly payed for, or it will need to be signed. 
     if participant_data["chose"] == "receive":
         order_id = fire_append(ORDER_REF,{"status":"confirmed" ,"order_sender":order_from, "order_recipient":order_to, "amount":total_price, "products":data[1:]})
+        # This is the first instance we see of tracking_data, which is used to track the origin of an order 
         Tracking_Data(order_id)
         order_payment(get_node(order_from),get_node(order_to),total_price)
         return {"status":"200","msg":"Your order has been created and is already signed!"}

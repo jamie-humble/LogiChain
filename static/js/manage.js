@@ -251,7 +251,7 @@ function load_products(recipient){
   }
   else if(recipient == "receive"){
     var findInd = (element) => element == loaded_data["session_node"];
-    var pov = nodes[1+nodes.findIndex(findInd)];
+    var pov = nodes[nodes.findIndex(findInd)-1];
   }
   for (const [key, value] of Object.entries(loaded_data["products"])){
     if (value["seller"] == pov){
@@ -376,6 +376,30 @@ $(document).ready(function(){
 
   });
   
+  function percentageToDegrees(percentage) {
+    return percentage / 100 * 360
+  }
+  function progress() {
+    $(".progress").each(function() {
+  
+      var value = $(this).attr('data-value');
+      var left = $(this).find('.progress-left .progress-bar');
+      var right = $(this).find('.progress-right .progress-bar');
+  
+      if (value > 0) {
+        if (value <= 50) {
+          right.css('transform', 'rotate(' + percentageToDegrees(value) + 'deg)')
+        } else {
+          right.css('transform', 'rotate(180deg)')
+          left.css('transform', 'rotate(' + percentageToDegrees(value - 50) + 'deg)')
+        }
+      }
+    })
+  } 
+
+  
+  
+
   $(".order_entry").click(function(){
     // Make the order information container visible
     $(".info_order_summary_append").empty();
@@ -405,6 +429,7 @@ $(document).ready(function(){
       $(".progress-preparation").html("50%");
       $(".progress-delivery").html("0%");
       $(".QR-code-select").hide();
+      progress();
     }
     else if(order_object["status"] == "confirmed"){
       $(".progress").attr("data-value","100");
@@ -413,6 +438,7 @@ $(document).ready(function(){
       $(".progress-delivery").html("100%");
       $(".QR-code-select").show();
       $(".QR-code-select").attr("id",id);
+      progress();
     }
     else if(order_object["status"] == "cancelled"){
       $(".progress").attr("data-value","0");
@@ -420,6 +446,7 @@ $(document).ready(function(){
       $(".progress-preparation").html("100%");
       $(".progress-delivery").html("0%");
       $(".QR-code-select").hide();
+      progress();
     }
 
     if(order_object["status"] == "pending" && loaded_data["session_node"]==order_object["order_sender"]){
@@ -456,6 +483,8 @@ $(document).ready(function(){
         });
       }
     }
+    $(".event_append").scrollTop($(".event_append")[0].scrollHeight);
+
   });
 
   $(".submit-order").click(function(){
@@ -525,28 +554,7 @@ $(document).ready(function(){
     subtotal();
   });
 
-  $(function() {
-    $(".progress").each(function() {
   
-      var value = $(this).attr('data-value');
-      var left = $(this).find('.progress-left .progress-bar');
-      var right = $(this).find('.progress-right .progress-bar');
-  
-      if (value > 0) {
-        if (value <= 50) {
-          right.css('transform', 'rotate(' + percentageToDegrees(value) + 'deg)')
-        } else {
-          right.css('transform', 'rotate(180deg)')
-          left.css('transform', 'rotate(' + percentageToDegrees(value - 50) + 'deg)')
-        }
-      }
-    })
-    
-    function percentageToDegrees(percentage) {
-      return percentage / 100 * 360
-    }
-  
-  });
 
   $(".accept-order").click(function(){
     var id = $(this).attr("id");
