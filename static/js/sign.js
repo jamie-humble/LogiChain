@@ -1,15 +1,7 @@
 $(document).ready(function(){
-
-  // $('.alert').on('closed.bs.alert', function () {
-  //   console.log("closed");
-  // })
-
- 
-
-  // $('.alert').alert();
   const Alert = window.Alert;
 
-
+  // Submit form on button click
   $("#submit").click(function(){
     $(this).closest("form").submit();
   });
@@ -18,22 +10,24 @@ $(document).ready(function(){
     event.preventDefault();
     const data = new FormData(event.target);
     const value = Object.fromEntries(data.entries());
-    
+    // Dont allow empty feilds
     for (const [key, val] of Object.entries(value)) {
       if (val == ""){
-        return new Alert("warning",'Empty Field(s) Detected',"Please fill out all fields.");
+        return new Alert("warning",'Empty Field(s) Detected',"Please fill out all of the forms fields.");
       }
     }
 
+    // Check that the passwords match
     if(value["passwordConfirmation"]!=value["password"]){
       return new Alert("warning",'Passwords do not match.',"Try to carefully re-enter your password confirmation.");
     }
 
+    // Stop people trying to break the server
     if(/^[a-zA-Z0-9-]*$/.test(value["username"] + value["password"]) == false) {
       return new Alert("warning","Illegal Characters Detected",'Your username or password contains illegal characters.');
     }
 
-    
+    // Send API
     $.ajax({
       type: "POST",
       url: "/postsignup",
@@ -41,7 +35,6 @@ $(document).ready(function(){
       data: JSON.stringify(value),
       dataType: "json",
       success: function(response) {
-        // var post_responce = response.responseText;
         
         new Alert("success","Signed Up",response.msg);
         if (response.redirect){
@@ -77,7 +70,6 @@ $(document).ready(function(){
       data: JSON.stringify(value),
       dataType: "json",
       success: function(response) {
-        // var post_responce = response.responseText;
         
         new Alert("success","Signed In",response.msg);
         if (response.redirect){

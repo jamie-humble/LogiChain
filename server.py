@@ -91,7 +91,7 @@ def check():
         _ = session["username"]
         return flask.render_template("LogiDesk/index.html")
     except:
-        return flask.render_template("index.html")
+        return flask.render_template("signin.html")
     
 # This function acts as a page route but it also transmits data to be processed bt javascript and used to display information on the webpage.
 @app.route("/LogiDesk/order")
@@ -100,7 +100,7 @@ def manage():
     try:
         _ = session["username"]
     except:
-        return flask.render_template("index.html")
+        return flask.render_template("signin.html")
     session_node = get_user(session["username"])["node"]
     _data = {"products":get_all_products(), "session_node": session_node, "orders":fetch_nodes_orders(session_node), "events":get_all_events()}
     return flask.render_template("LogiDesk/manage.html", _data = json.dumps(_data))
@@ -186,7 +186,7 @@ def account():
     try:
         _ = session["username"]
     except:
-        return flask.render_template("index.html")
+        return flask.render_template("signin.html")
     _data = get_node(get_user(session["username"])["node"])
     _data["username"] = session["username"]
     return flask.render_template("LogiDesk/account.html", _data = json.dumps(_data))
@@ -194,7 +194,6 @@ def account():
 @app.route("/logout", methods=['POST'])
 def logout():
     session["username"] = None
-    print("Logout")
     return  flask.jsonify({"msg":"You have been logged out, come back soon!", "redirect": True, "redirect_url":"/"})
 
 

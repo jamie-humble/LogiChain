@@ -405,6 +405,7 @@ $(document).ready(function(){
         var order_object = x;
       }
     }
+    // Check if the ID was found
     try{
       var _ = order_object;
     }
@@ -417,9 +418,8 @@ $(document).ready(function(){
     order_object["recipient"] = order_object["recipient"].toLowerCase();
 
     if(order_object["status"] == "pending"){
-
       if(loaded_data["session_node"] == order_object["recipient"]){
-
+        // Allow the recipient to accept/decline the order
         $(".accept-order").show();
         $(".decline-order").show();
 
@@ -427,7 +427,7 @@ $(document).ready(function(){
         $(".decline-order").attr("disabled",false);  
       }
       else{
-
+        // Allow the sender to cancel the order
         $(".accept-order").attr("disabled",true);
         $(".accept-order").hide();
         $(".decline-order").attr("disabled",false);
@@ -467,13 +467,13 @@ $(document).ready(function(){
       $(".QR-code-select").hide();
       progress();
     }
-
+    // Display the orders products
     order_object.products.forEach(x=>{
       var _ = new Info_Product_Display(x["value"],x["name"],x["price"]) 
     });
     $(".info-total").html(order_object["amount"]);
 
-
+    // Display the order's events
     for (const [key, value] of Object.entries(loaded_data["events"])){
       if (value["order_id"] == id){
         value["tracking_data"].forEach(x => {
@@ -482,12 +482,11 @@ $(document).ready(function(){
       }
     }
     $(".event_append").scrollTop($(".event_append")[0].scrollHeight);
-
   });
-
+  // END order display
+  // Submission functions
   $(".submit-order").click(function(){
     $(".submit-order").attr("disabled",true);
-
     try{
       if(window.order_total==0){
         return new Alert("warning", "Select some items", "Before proceeding with your order, please select some products.");
@@ -506,6 +505,8 @@ $(document).ready(function(){
     for (let index = 0; index < $(this).serializeArray().length; index++) {
       const x = $(this).serializeArray()[index];
       if (x["value"] % 1 != 0){
+        // Ive tried my best to stay professional during this project, but since this only occurs if someone really wants to
+        // break my website, ill allow a little bit of cheek 
         return new Alert("warning","Float Detected", "You cant buy half of a product you silly billy!");
       }
       else if (x["value"]!=""){
@@ -535,6 +536,7 @@ $(document).ready(function(){
     });
   });
 
+  // Allows for people to add or take products with the click of a button
   $(".minus").click(function() {
     var input = $(this).next('input');
     var numb = Number($(input).val())-5;
@@ -556,9 +558,7 @@ $(document).ready(function(){
 
   $(".item-number").keyup(function(){
     subtotal();
-  });
-
-  
+  });  
 
   $(".accept-order").click(function(){
     var id = $(this).attr("id");
@@ -597,7 +597,10 @@ $(document).ready(function(){
       }
     });
   });
+  // END Order Submission functions
 
+
+  // QR API
   $(".QR-code-select").click(function(){
     var id = $(this).attr("id");
     $.ajax({
