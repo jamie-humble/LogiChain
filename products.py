@@ -9,16 +9,20 @@ PRODUCTS = [
   {"name": "Calcium", "price":4, "seller":"supplier"},
   {"name": "Iron Powder", "price":16, "seller":"supplier"},
   {"name": "Salt", "price":11, "seller":"supplier"},
-  {"name": "First infant formula", "price":23, "seller":"manufacturer"},
-  {"name": "Goats' milk formula", "price":34, "seller":"manufacturer"},
-  {"name": "Hungrier baby formula", "price":46, "seller":"manufacturer"},
-  {"name": "Comfort formula", "price":33, "seller":"manufacturer"},
-  {"name": "Lactose-free formula", "price":38, "seller":"manufacturer"},
-  {"name": "Soya formula", "price":32, "seller":"manufacturer"}
+  {"name": "First infant formula", "price":23, "seller":"vendor"},
+  {"name": "Goats' milk formula", "price":34, "seller":"vendor"},
+  {"name": "Hungrier baby formula", "price":46, "seller":"vendor"},
+  {"name": "Comfort formula", "price":33, "seller":"vendor"},
+  {"name": "Lactose-free formula", "price":38, "seller":"vendor"},
+  {"name": "Soya formula", "price":32, "seller":"vendor"},
+  {"name": "White Sugar", "price":6, "seller":"DEMO_supplier"},
+  {"name": "Plain Flour", "price":6, "seller":"DEMO_supplier"},
+  {"name": "Bulk Brownie Package", "price":10, "seller":"DEMO_manufacturer"},
+  {"name": "Brownie Package", "price":50, "seller":"DEMO_vendor"}
 ]
-# And instead of manually writing the vendors products out, we use list comprehension to mark them up in price and send them in bulk (x10) 
+# And instead of manually writing the manufactures products out, we use list comprehension to mark them up in price and send them in bulk (x10) 
 markup = 5
-{PRODUCTS.append({"name": "Bulk package "+x["name"], "price":(x["price"]+markup)*10, "seller":"vendor"}) for x in PRODUCTS if x["seller"]=="manufacturer"}
+{PRODUCTS.append({"name": "Bulk package "+x["name"], "price":(x["price"]+markup)*10, "seller":"manufacturer"}) for x in PRODUCTS if x["seller"]=="vendor"}
 
 # This function is run as the server starts to detect if any products are missing from firebase, and to re-append them to the database if so.
 def product_update():
@@ -76,6 +80,7 @@ class Tracking_Data:
       "Awaiting approval from the "+receiving_node,
       "Approval received from the "+receiving_node,
       "The "+sending_node+" has begun prepearing the order",
+      "The products have had their integrity verified",
       "The "+sending_node+" has fulfilled the order and is awaiting a delivery driver",
       "Order has been received by the delivery driver"
     ] 

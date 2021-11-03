@@ -53,7 +53,7 @@ class Node:
 
     # Minus 10,000,000 drops from the amount being transacted for the account to hold its base reserve
     # https://xrpl.org/reserves.html#base-reserve-and-owner-reserve
-    return xrpl_transaction(admin["classic_address"], wallet, balance-10000000)
+    return xrpl_transaction(admin["classic_address"], self.__dict__, balance-10000000)
     
   # Use the XRPL test network to generate an account, which is then appended to be apart of the User object
   # This user can be seen and tracked from the actual testnet at https://test.xrptoolkit.com/

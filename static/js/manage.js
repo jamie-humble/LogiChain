@@ -1,4 +1,6 @@
-
+// This is the JS file responsible for the handling of orders 
+// First we have the class which is populated by LogiChain Orders.
+// this class works to simply display an order
 class OrderDisplay {
   constructor(numb, identifier, sender, relative_type, amount, recipient, status, products) {
     this.numb = numb;
@@ -10,7 +12,6 @@ class OrderDisplay {
     this.status = status;
     this.products = products;
     this.build("smartcontract_append");
-    // this.build(this.relative_type);
   }
 
   build(relative_order_type){
@@ -88,45 +89,10 @@ class OrderDisplay {
     [number,uname, recipient,relative_type,amount,activity,td,identifier].forEach(x => {
       tr.appendChild(x);
     });
-    // if (relative_order_type == "incoming" && this.status == "confirmed"){
-    //   var rooter = document.getElementById("product");
-    // }
-    // else{
-    //   var rooter = document.getElementById(relative_order_type);
-    // }
-    // var rooter = document.getElementById("smartcontract_append");
     $(".order_append").append(tr);
   }
-
 }
-class Info_Product_Display {
-  constructor(amount, item, price) {
-    this.amount = "x "+amount;
-    this.item = item;
-    this.price = "$"+price;
-    this.build();
-    // this.build(this.relative_type);
-  }
-
-  build(){
-    // creation
-    const tr = document.createElement("tr");
-    const amount = document.createElement("td");
-    const item = document.createElement("td");
-    const price = document.createElement("td");
- 
-    amount.innerHTML = this.amount;
-    item.innerHTML = this.item;
-    price.innerHTML = this.price;
-
-    [amount,item,price].forEach(x => {
-      tr.appendChild(x);
-    });
-
-    $(".info_order_summary_append").append(tr);
-  }
-}
-
+// This code works to generate every relevant order 
 var ORDER_MASTER_ARRAY = [];
 var i = 0;
 loaded_data["orders"].forEach( x => {
@@ -148,6 +114,7 @@ loaded_data["orders"].forEach( x => {
   )
   i++;
 });
+// If there are no orders to generate, fill the page with a nice "no orders" image and message
 if(i==0){
   const img_no_orders = document.createElement("img");
   $(img_no_orders).attr("src","/static/img/no-orders.png");
@@ -161,15 +128,42 @@ if(i==0){
   $(".container-xl").append(img_no_orders);
 }
 
+// To give information about a specific order, show the purchased products
+class Info_Product_Display {
+  constructor(amount, item, price) {
+    this.amount = "x "+amount;
+    this.item = item;
+    this.price = "$"+price;
+    this.build();
+  }
+
+  build(){
+    // Create the necessary elements
+    const tr = document.createElement("tr");
+    const amount = document.createElement("td");
+    const item = document.createElement("td");
+    const price = document.createElement("td");
+ 
+    amount.innerHTML = this.amount;
+    item.innerHTML = this.item;
+    price.innerHTML = this.price;
+
+    [amount,item,price].forEach(x => {
+      tr.appendChild(x);
+    });
+
+    $(".info_order_summary_append").append(tr);
+  }
+}
+// Give Context of the order in past, allowing a user to track it back to its roots
 class Event_Display {
   constructor(event) {
     this.event = event;
     this.build();
-    // this.build(this.relative_type);
   }
 
   build(){
-    // creation
+    // Create the necessary elements
     const tr = document.createElement("tr");
     const event = document.createElement("td");
     $(event).html(this.event);
@@ -179,7 +173,7 @@ class Event_Display {
   }
 }
 
-
+// This class is used to construct the available products for someone to include in an order 
 class ProductDisplay{
   constructor(title, price, recipient){
     this.title = title;
@@ -192,12 +186,6 @@ class ProductDisplay{
     div0.className = "row border-top border-bottom";
     const div1 = document.createElement("div");
     div1.className = "row align-items-center";
-    // const div2 = document.createElement("div");
-    // div2.className = "col-2";
-    // const img = document.createElement("img");
-    // img.className = "img-fluid";
-    // // item image
-    // $(img).attr('src','')
     const div3 = document.createElement("div");
     div3.className = "col";
     const div4 = document.createElement("div");
@@ -234,6 +222,8 @@ class ProductDisplay{
       div1.appendChild(x);
     });
     div0.appendChild(div1);
+    // Here, we append each product to a specific div so that depending on who the order is
+    // sent by, the right products are shown. 
     if (this.recipient=="receive"){
       var app = ".receive";
     }
@@ -243,7 +233,7 @@ class ProductDisplay{
     $(app).append(div0)
   }
 }
-
+// Fucntion to generate the right products for each order.
 function load_products(recipient){
   var nodes = ["supplier", "manufacturer", "vendor", "retailer"];
   if (recipient == "send"){
@@ -256,7 +246,6 @@ function load_products(recipient){
   for (const [key, value] of Object.entries(loaded_data["products"])){
     if (value["seller"] == pov){
       var _ = new ProductDisplay(value["name"],value["price"],recipient);
-
     }
   }
 }
@@ -267,9 +256,9 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+// Function to find the total price of an order when its being created.
 function subtotal(){
   var sub_total=0;
-
   $(".item-number").each(function(){
     var price = $(this).parent().next(".col").html();
     var price = Number(price.substring(1));
@@ -283,44 +272,44 @@ function subtotal(){
 
 $(document).ready(function(){
   const Alert = window.Alert;
-  var nodes = ["supplier", "manufacturer", "vendor", "retailer"]
+  var nodes = ["supplier", "manufacturer", "vendor", "retailer"];
 
-  subtotal();
 
   // Order information
   $(".order-info").hide();
-
   $(".info-hide").hide();
   $(".info-incoming").hide();
-
   $(".close").click(function(){
     $(".order-info").hide();
   });
 
   //Order creation
+  subtotal();
   $(".order-customize").hide();
   $(".payment-method").hide();
   $(".send").hide();
 
-  var nodes = ["supplier", "manufacturer", "vendor", "retailer"]
-
+  // The two following functions are called when, in order creation, a user presses the send or receive button, respectively. 
   function send_select(){
+    // Give hidden information to an element
     $(".submit-order").attr("aria-details","send");
+    // Reset the form each time a button is pressed
     $(".order-creation").trigger("reset");
+    // Show the appropriate products
     $(".receive").hide();
     $(".send").show();
+    // Change buttons
     $(".payment-method-select").attr("disabled",true);
     $(".submit-order").html("Submit Order Request");
     $(".submit-order").attr("disabled",false);
     subtotal();
+    // Give a bit of context to the order
     $(".recip-info").html("You ("+loaded_data["session_node"]+") will be sending products to "+nodes[nodes.indexOf(loaded_data["session_node"])+1])
   }
 
   function receive_select(){
-    // $(".cart-summ").empty();
     $(".submit-order").attr("aria-details","receive");
     $(".order-creation").trigger("reset");
-    // load_products("receive");
     $(".receive").show();
     $(".send").hide();
     $(".payment-method-select").attr("disabled",false);
@@ -331,11 +320,12 @@ $(document).ready(function(){
 
   }
 
+  // Order creation button logic
   $(".rec-select-send").click(function() {
     send_select();
   });
   $(".rec-select-receive").click(function() {
-    receive_select()
+    receive_select();
   });
 
   $(".payment-method-select").click(function(){
@@ -373,9 +363,10 @@ $(document).ready(function(){
       $(".rec-select-send").attr("disabled",true);
       receive_select();
     }
-
   });
+  // Button logic end
   
+  // Function to update the radial progress bar 
   function percentageToDegrees(percentage) {
     return percentage / 100 * 360
   }
@@ -397,9 +388,7 @@ $(document).ready(function(){
     })
   } 
 
-  
-  
-
+  // When an order is clicked on, show its information
   $(".order_entry").click(function(){
     // Make the order information container visible
     $(".info_order_summary_append").empty();
@@ -514,11 +503,17 @@ $(document).ready(function(){
     event.preventDefault();
     var submit_aria = $(".submit-order").attr("aria-details")
     var product_data = [{"node":loaded_data["session_node"],"chose":submit_aria}];
-    $(this).serializeArray().forEach(x=>{
-      if (x["value"]!=""){
+    for (let index = 0; index < $(this).serializeArray().length; index++) {
+      const x = $(this).serializeArray()[index];
+      if (x["value"] % 1 != 0){
+        return new Alert("warning","Float Detected", "You cant buy half of a product you silly billy!");
+      }
+      else if (x["value"]!=""){
         product_data.push(x);
       }
-    });
+      
+    }
+
     if (submit_aria=="receive"){
       new Alert("success","Your Order's Payment is Processing", "This may take a minute, please wait while the XRP ledger processes your order.")
 

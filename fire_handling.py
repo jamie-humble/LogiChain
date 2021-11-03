@@ -144,7 +144,9 @@ class wallet_json_to_object:
     self.classic_address = json["classic_address"]
     self.sequence = json["sequence"]
 
-# xrpl_admin_fund is used to make sure that the logichain admin node is always sufficiently funded to create transactions.
+# xrpl_admin_fund is used to make sure that the LogiChain admin node is always sufficiently funded to create transactions.
+# If this was a business deployment of LogiChain, this function would be buying XRP from an exchange, but instead we are using a testnet, where
+# there are ways to get XRP without spending money, which is what we are doing here.  
 def xrpl_admin_fund(amount):
   """
     This function should look like this, but since the XRP network wont let you transact

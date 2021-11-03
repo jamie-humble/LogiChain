@@ -9,6 +9,7 @@ $(document).ready(function(){
   // $('.alert').alert();
   const Alert = window.Alert;
 
+
   $("#submit").click(function(){
     $(this).closest("form").submit();
   });
@@ -32,7 +33,7 @@ $(document).ready(function(){
       return new Alert("warning","Illegal Characters Detected",'Your username or password contains illegal characters.');
     }
 
-
+    
     $.ajax({
       type: "POST",
       url: "/postsignup",
