@@ -146,9 +146,13 @@ def accept_order():
     order_recipient = get_node(order["order_recipient"])
     order_sender = get_node(order["order_sender"])
     # Now we execute our order payment
-    order_payment(order_recipient,order_sender,order["amount"])
-    return {"nature":"success","msg_title":"Order Signed","msg":"Your order has been signed and submitted to the XRP ledger!"}
-    
+    try:
+        order_payment(order_recipient,order_sender,order["amount"])
+        return {"nature":"success","msg_title":"Order Signed","msg":"Your order has been signed and submitted to the XRP ledger!"}
+    except:
+        return {"nature":"error","msg_title":"Order Could not be signed","msg":"Please reload the page and try again"}
+
+        
 # An API to decline orders by simply chaing their status
 @app.route("/order/decline", methods=['POST'])
 def decline_order():

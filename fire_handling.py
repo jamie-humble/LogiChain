@@ -219,13 +219,13 @@ def order_payment(recipient_wallet_dict, sender_wallet_dict, fiat_amount):
   # amount is in the form of drops, so we find the number of XRP with fiat_amount*XRP_CONVERSION
   # and then turn it into drops.
   amount = XRP_TO_DROPS(fiat_amount*XRP_CONVERSION)
-  # First we will fund the admin node
+  # First we will fund the admin node if it needs more XRP
   xrpl_admin_fund(amount)
-  # Second, we transfer funds from the admin node to the client
+  # Second, we transfer funds from the admin node to the recipient of the order
   admin_object = get_node("LogiChain-Admin")
-  xrpl_transaction(sender_wallet_dict["classic_address"], admin_object,amount)
+  xrpl_transaction(recipient_classic, admin_object,amount)
   # Finally, we execute the orders transaction
-  xrpl_transaction(recipient_classic, sender_wallet_dict, amount)
-  # Now, to protect the client from loss, we take away their XRP in exchange for fiat money
-  xrpl_transaction(admin_object["classic_address"],recipient_wallet_dict,amount)
+  xrpl_transaction(sender_wallet_dict["classic_address"], recipient_wallet_dict, amount)
+  # Now, to protect the sender from loss, we take away their XRP in exchange for fiat money
+  xrpl_transaction(admin_object["classic_address"],sender_wallet_dict,amount)
   update_fiat_balance(recipient_wallet_dict["type"],fiat_amount)

@@ -17,7 +17,7 @@ PRODUCTS = [
   {"name": "Soya formula", "price":32, "seller":"vendor"},
   {"name": "White Sugar", "price":6, "seller":"DEMO_supplier"},
   {"name": "Plain Flour", "price":6, "seller":"DEMO_supplier"},
-  {"name": "Bulk Brownie Package", "price":10, "seller":"DEMO_manufacturer"},
+  {"name": "Bulk Brownie Package", "price":100, "seller":"DEMO_manufacturer"},
   {"name": "Brownie Package", "price":50, "seller":"DEMO_vendor"}
 ]
 # And instead of manually writing the manufactures products out, we use list comprehension to mark them up in price and send them in bulk (x10) 
@@ -96,7 +96,6 @@ class Tracking_Data:
       if x == sending_node:
         break
       tracking_data += self.image(x, get_next_node(x))
-      print(tracking_data)
     return tracking_data
 
   # Since a pending transaction has not yet been approved, we cut off the events at "awaiting approval"

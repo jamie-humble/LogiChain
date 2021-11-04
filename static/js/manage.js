@@ -1,4 +1,5 @@
 // This is the JS file responsible for the handling of orders 
+
 // First we have the class which is populated by LogiChain Orders.
 // this class works to simply display an order
 class OrderDisplay {
@@ -233,9 +234,12 @@ class ProductDisplay{
     $(app).append(div0)
   }
 }
+
+const nodes = ["supplier", "manufacturer", "vendor", "retailer", "DEMO_supplier", "DEMO_manufacturer", "DEMO_vendor", "DEMO_retailer"];
+
+
 // Fucntion to generate the right products for each order.
 function load_products(recipient){
-  var nodes = ["supplier", "manufacturer", "vendor", "retailer"];
   if (recipient == "send"){
     var pov = loaded_data["session_node"];
   }
@@ -272,7 +276,6 @@ function subtotal(){
 
 $(document).ready(function(){
   const Alert = window.Alert;
-  var nodes = ["supplier", "manufacturer", "vendor", "retailer"];
 
 
   // Order information
@@ -352,14 +355,14 @@ $(document).ready(function(){
     $(".order-customize").css('visibility', 'visible');
     $(".recip-info").html("You ("+loaded_data["session_node"]+") will be receiving products from "+nodes[nodes.indexOf(loaded_data["session_node"])-1])
 
-    if(loaded_data["session_node"]=="supplier"){
+    if(loaded_data["session_node"]=="supplier"||loaded_data["session_node"]=="DEMO_supplier"){
       $(".rec-select-receive").attr("disabled",true);
       $(".rec-select-send").attr("checked",true);
       $(".rec-select-receive").attr("checked",false);
 
       send_select();
     }
-    else if(loaded_data["session_node"]=="retailer"){
+    else if(loaded_data["session_node"]=="retailer"||loaded_data["session_node"]=="DEMO_retailer"){
       $(".rec-select-send").attr("disabled",true);
       receive_select();
     }
@@ -413,9 +416,11 @@ $(document).ready(function(){
       return new Alert("error","Order not found","We could not find the order you selected, please reload the page and try again.")
     }
     // Display information
-
-    order_object["sender"] = order_object["sender"].toLowerCase();
-    order_object["recipient"] = order_object["recipient"].toLowerCase();
+    if (order_object["recipient"].slice(0,4) != "DEMO"){
+      order_object["sender"] = order_object["sender"].toLowerCase();
+      order_object["recipient"] = order_object["recipient"].toLowerCase();
+  
+    }
 
     if(order_object["status"] == "pending"){
       if(loaded_data["session_node"] == order_object["recipient"]){
@@ -427,6 +432,7 @@ $(document).ready(function(){
         $(".decline-order").attr("disabled",false);  
       }
       else{
+        console.log(loaded_data["session_node"], order_object["recipient"],order_object["recipient"].slice(0,4))
         // Allow the sender to cancel the order
         $(".accept-order").attr("disabled",true);
         $(".accept-order").hide();
